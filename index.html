@@ -73,18 +73,16 @@ input {
     </header>
 
 <section style="margin: 20px 0;">
-    <button onclick="loginGoogle()">Iniciar sesión</button>
-    <button onclick="logout()">Cerrar sesión</button>
-  </section>
-
-  <section>
+  <button id="btnLogin" onclick="loginGoogle()">Iniciar sesión</button>
+  <button id="btnLogout" onclick="logout()" style="display:none;">
+    Cerrar sesión
+  </button>
+</section>
 <input id="mensaje" placeholder="Escribe tu mensaje">
 <button onclick="guardar()" style="width:100%; margin-top:10px;">
   Enviar mensaje
   </button>
- </section>
-    
- <section>
+
     <h2>Conversación</h2>
     <ul id="lista"></ul>
   </section>
@@ -117,17 +115,42 @@ const provider = new GoogleAuthProvider();
 
 let usuario = null;
 
+  const btnLogin = document.getElementById("btnLogin");
+const btnLogout = document.getElementById("btnLogout");
+const inputMensaje = document.getElementById("mensaje");
+
+onAuthStateChanged(auth, (user) => {
+  usuario = user;
+
+  if (user) {
+    btnLogin.style.display = "none";
+    btnLogout.style.display = "inline-block";
+    inputMensaje.disabled = false;
+    inputMensaje.placeholder = "Escribe tu mensaje…";
+  } else {
+    btnLogin.style.display = "inline-block";
+    btnLogout.style.display = "none";
+    inputMensaje.disabled = true;
+    inputMensaje.placeholder = "Inicia sesión para escribir…";
+  }
+});
+
 // LOGIN
 window.loginGoogle = async () => {
-  const result = await signInWithPopup(auth, provider);
-  usuario = result.user;
-  alert("Bienvenido " + usuario.displayName);
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 // LOGOUT
 window.logout = async () => {
-  await signOut(auth);
-  alert("Sesión cerrada");
+  try {
+    await signOut(auth);
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 // GUARDAR MENSAJE
@@ -135,31 +158,42 @@ window.guardar = async () => {
   const texto = document.getElementById("mensaje").value;
   if (!texto) return;
 
-  await addDoc(collection(db, "mensajes"), {
-    texto: texto,
-    user: usuario ? usuario.displayName : "Anonimo",
-    fecha: new Date()
-  });
+await addDoc(collection(db, "mensajes"), {
+  texto: texto,
+  user: usuario.displayName,
+  uid: usuario.uid,
+  fecha: new Date()
+});
 
   document.getElementById("mensaje").value = "";
 };
 
 // LEER CHAT
-const q = query(collection(db, "mensajes"), orderBy("fecha"));
 onSnapshot(q, (snapshot) => {
   const lista = document.getElementById("lista");
   lista.innerHTML = "";
+
   snapshot.forEach(doc => {
     const d = doc.data();
     const li = document.createElement("li");
-    li.innerHTML = `<b>${d.user}:</b> ${d.texto}`;
+
+    if (usuario && d.uid === usuario.uid) {
+      li.classList.add("mio");
+    } else {
+      li.classList.add("otro");
+    }
+
+    li.innerHTML = `<span>${d.texto}</span>`;
     lista.appendChild(li);
   });
+
+  lista.scrollTop = lista.scrollHeight;
 });
 </script>
 
 </body>
 </html>
+
 
 
 
