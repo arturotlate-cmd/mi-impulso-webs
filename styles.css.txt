@@ -6,7 +6,9 @@
   --card:#ffffff;
 }
 
-* { box-sizing: border-box }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
@@ -25,7 +27,7 @@ header {
 
 header img {
   max-width: 170px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 nav {
@@ -49,6 +51,11 @@ nav button:hover {
   background: var(--green);
   color: white;
   transform: translateY(-2px);
+}
+
+nav button.active {
+  background: var(--green);
+  color: white;
 }
 
 /* MAIN */
@@ -128,19 +135,15 @@ button.primary:hover {
 }
 
 /* ANIMATIONS */
-.fade-in {
-  animation: fadeIn .6s ease forwards;
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .6s ease, transform .6s ease;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .hidden {
@@ -160,3 +163,4 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+
