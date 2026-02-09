@@ -62,4 +62,9 @@ document.querySelectorAll('.reveal')
   .forEach(el => observer.observe(el));
 
 renderProducts();
+// === ANIMACIÓN DE ENTRADA ===
+document.querySelectorAll('.card, .product, .hero').forEach(el => {
+  el.classList.add('fade-in');
+});
+
 
