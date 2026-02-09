@@ -2,47 +2,26 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Mi Impulso Web</title>
+<title>Chat Privado Firestore</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 
-<header>
-  <h1>Mi Impulso Web 🚀</h1>
+<h2>🔥 Chat privado Firestore</h2>
 
-  <button id="loginBtn">Iniciar sesión</button>
-  <button id="logoutBtn" style="display:none;">Cerrar sesión</button>
-  <p id="userInfo"></p>
-</header>
+<button id="loginGoogle">Login Google</button>
+<button id="logout">Salir</button>
 
-<!-- PUBLICAR -->
-<section>
-<h2>Publicar producto</h2>
+<p id="user"></p>
 
-<input id="pName" placeholder="Nombre">
-<input id="pDesc" placeholder="Descripción">
-<input id="pPrice" type="number" placeholder="Precio">
-<input type="file" id="pImage">
+<div id="chat" style="display:none;">
+  <input id="msg" placeholder="Escribe mensaje">
+  <button id="send">Enviar</button>
+  <div id="messages"></div>
+</div>
 
-<button id="publishBtn">Publicar</button>
-</section>
-
-<!-- MARKETPLACE -->
-<section>
-<h2>Marketplace</h2>
-<div id="products"></div>
-</section>
-
-<!-- CHAT PRIVADO -->
-<section id="privateChat" style="display:none;">
-  <h2>Chat con vendedor</h2>
-  <div id="privateChatBox"></div>
-  <input id="privateMsg" placeholder="Mensaje...">
-  <button id="sendPrivate">Enviar</button>
-</section>
-
+<script type="module">
+  
 <!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -70,110 +49,59 @@ const provider = new GoogleAuthProvider();
 let currentUser = null;
 let currentChatProduct = null;
 
-// LOGIN
-loginBtn.onclick = async () => {
-  const result = await signInWithPopup(auth, provider);
-  currentUser = result.user;
-  userInfo.innerText = "Hola " + currentUser.displayName;
-  loginBtn.style.display = "none";
-  logoutBtn.style.display = "inline";
+// ================= LOGIN =================
+const provider = new GoogleAuthProvider();
+
+document.getElementById("loginGoogle").onclick = () => {
+  signInWithPopup(auth, provider);
 };
 
-logoutBtn.onclick = () => {
-  signOut(auth);
-  location.reload();
-};
+document.getElementById("logout").onclick = () => signOut(auth);
 
-// PUBLICAR
-publishBtn.onclick = async () => {
-  if (!currentUser) return alert("Inicia sesión");
-
-  const file = pImage.files[0];
-  const imgRef = ref(storage, "products/" + Date.now());
-  await uploadBytes(imgRef, file);
-  const imgURL = await getDownloadURL(imgRef);
-
-  await addDoc(collection(db, "products"), {
-    name: pName.value,
-    desc: pDesc.value,
-    price: pPrice.value,
-    imgURL,
-    user: currentUser.displayName
-  });
-
-  alert("Publicado!");
-};
-
-// MOSTRAR PRODUCTOS
-onSnapshot(collection(db, "products"), (snap) => {
-  products.innerHTML = "";
-  snap.forEach(doc => {
-    const p = doc.data();
-    products.innerHTML += `
-      <div class="product">
-        <img src="${p.imgURL}" width="150">
-        <h3>${p.name}</h3>
-        <p>${p.desc}</p>
-        <b>$${p.price}</b>
-        <p>Vendedor: ${p.user}</p>
-        <button onclick="openChat('${doc.id}')">Contactar vendedor</button>
-      </div>
-    `;
-  });
+// ================= USUARIO =================
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    document.getElementById("user").innerText = "Usuario: " + user.displayName;
+    document.getElementById("chat").style.display = "block";
+    loadMessages(user.uid);
+  } else {
+    document.getElementById("chat").style.display = "none";
+  }
 });
 
-// CHAT PRIVADO
-window.openChat = (id) => {
-  if (!currentUser) return alert("Inicia sesión");
-  currentChatProduct = id;
-  privateChat.style.display = "block";
+// ================= ENVIAR MENSAJE PRIVADO =================
+document.getElementById("send").onclick = async () => {
+  const user = auth.currentUser;
+  const msg = document.getElementById("msg").value;
+  if (!user || !msg) return;
 
-  onSnapshot(collection(db, "chats", id, "messages"), (snap) => {
-    privateChatBox.innerHTML = "";
+  await addDoc(collection(db, "privateChat", user.uid, "messages"), {
+    name: user.displayName,
+    uid: user.uid,
+    text: msg,
+    time: Date.now()
+  });
+
+  document.getElementById("msg").value = "";
+};
+
+// ================= LEER MENSAJES PRIVADOS =================
+function loadMessages(uid) {
+  const q = query(collection(db, "privateChat", uid, "messages"), orderBy("time"));
+
+  onSnapshot(q, (snap) => {
+    document.getElementById("messages").innerHTML = "";
     snap.forEach(doc => {
       const m = doc.data();
-      privateChatBox.innerHTML += `<p><b>${m.user}:</b> ${m.msg}</p>`;
+      document.getElementById("messages").innerHTML += `<p><b>${m.name}:</b> ${m.text}</p>`;
     });
   });
-};
-
-sendPrivate.onclick = async () => {
-  await addDoc(collection(db, "chats", currentChatProduct, "messages"), {
-    user: currentUser.displayName,
-    msg: privateMsg.value,
-    time: Date.now()
-  });
-  privateMsg.value = "";
-};
+}
 </script>
 
 </body>
 </html>
 
-// ================= CHAT PRIVADO =================
-let currentChatProduct = null;
-
-window.openChat = (id) => {
-  if (!currentUser) return alert("Inicia sesión");
-  currentChatProduct = id;
-  privateChat.style.display = "block";
-};
-
-sendPrivate.onclick = async () => {
-  await addDoc(collection(db, "chats", currentChatProduct, "messages"), {
-    user: currentUser.displayName,
-    msg: privateMsg.value,
-    time: Date.now()
-  });
-  privateMsg.value = "";
-};
-
-onSnapshot(collection(db, "chats"), () => {});
-
-</script>
-
-</body>
-</html>
 
 
 
