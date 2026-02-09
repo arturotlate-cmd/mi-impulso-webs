@@ -108,6 +108,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 400);
   }, 700);
 });
+/* ===============================
+   LOADER – SOLUCIÓN DEFINITIVA
+   =============================== */
+
+(function () {
+  const loader = document.getElementById("loader");
+
+  if (!loader) return;
+
+  // Corte duro: pase lo que pase
+  setTimeout(() => {
+    loader.style.opacity = "0";
+    loader.style.pointerEvents = "none";
+
+    setTimeout(() => {
+      if (loader.parentNode) {
+        loader.parentNode.removeChild(loader);
+      }
+    }, 300);
+  }, 1200);
+})();
+
 
 
 
