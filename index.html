@@ -66,28 +66,31 @@
 </section>
 <footer>© 2026 IMPULSO</footer>
 
+<!-- Firebase -->
 <script type="module">
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDS6GpjjaHOfooH6d5SgPQ8PNSReRWc8pI",
-  authDomain: "mi-impulso-web.firebaseapp.com",
-  projectId: "mi-impulso-web",
-  storageBucket: "mi-impulso-web.firebasestorage.app",
-  messagingSenderId: "1088637074350",
-  appId: "1:1088637074350:web:f2f67695cdfd9432a7e63f"
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_PROYECTO.firebaseapp.com",
+  projectId: "TU_PROYECTO",
+  storageBucket: "TU_PROYECTO.appspot.com",
+  messagingSenderId: "XXXX",
+  appId: "XXXX"
 };
 
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+window.firebaseApp = initializeApp(firebaseConfig);
+window.db = getFirestore(firebaseApp);
+</script>
 
-  import { collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
+<!-- TU SCRIPT -->
 <script type="module" src="script.js"></script>
+
 
 </body>
 </html>
+
 
 
 
