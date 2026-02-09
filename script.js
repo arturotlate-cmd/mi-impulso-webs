@@ -63,8 +63,17 @@ document.querySelectorAll('.reveal')
 
 renderProducts();
 // === ANIMACIÓN DE ENTRADA ===
-document.querySelectorAll('.card, .product, .hero').forEach(el => {
-  el.classList.add('fade-in');
-});
+// === ANIMACIÓN SOLO LA PRIMERA VEZ ===
+const alreadyAnimated = localStorage.getItem('impulso_animated');
+
+if (!alreadyAnimated) {
+  document.querySelectorAll('.card, .product, .hero').forEach(el => {
+    el.classList.add('fade-in');
+  });
+
+  localStorage.setItem('impulso_animated', 'true');
+}
+
+
 
 
