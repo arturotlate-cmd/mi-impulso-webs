@@ -14,163 +14,129 @@
 </head>
 
 <body>
+  <!-- Loader inicial -->
   <div id="loader">
-  <div class="spinner"></div>
-</div>
-
-<header>
-  <img src="logo-impulso.png" alt="Impulso">
-
-  <nav>
-    <button onclick="document.getElementById('project').scrollIntoView({behavior:'smooth'})">
-  Proyecto
-</button>
-  
-    <button onclick="showSection('market', this)" class="active">Inicio</button>
-    <button onclick="showSection('sell', this)">Vender</button>
-    <button onclick="showSection('about', this)">Acerca</button>
-  </nav>
-</header>
-
-<main>
-
-  <!-- HERO -->
-  <section class="hero reveal">
-    <section id="project" class="card reveal">
-  <h2>Sobre IMPULSO</h2>
-  <p>
-    IMPULSO es una plataforma web diseñada para conectar emprendedores con clientes,
-    permitiendo publicar y descubrir productos o servicios de manera sencilla.
-  </p>
-
-  <h3>🎯 Objetivo</h3>
-  <p>
-    Validar la idea de un marketplace digital enfocado en emprendimientos locales,
-    usando tecnologías web modernas.
-  </p>
-
-  <h3>🛠 Tecnologías usadas</h3>
-  <ul>
-    <li>HTML5 semántico</li>
-    <li>CSS moderno (Flexbox y Grid)</li>
-    <li>JavaScript vanilla</li>
-    <li>GitHub Pages (hosting)</li>
-  </ul>
-
-  <h3>📌 Estado del proyecto</h3>
-  <p class="muted">
-    Versión 1.0 – Frontend funcional (MVP).  
-    En futuras versiones se añadirá backend, autenticación y pagos.
-  </p>
-</section>
-    <h1>Impulsa tu proyecto</h1>
-    <p>Soluciones reales para crecer</p>
-  </section>
-
-  <!-- MARKET -->
-  <section id="market" class="grid reveal">
-    <div class="card reveal">
-      <h2>Filtros</h2>
-      <label>Buscar</label>
-      <input id="search" placeholder="Producto..." oninput="renderProducts()">
-
-      <label>Categoría</label>
-      <select id="category" onchange="renderProducts()">
-        <option value="">Todas</option>
-        <option value="servicio">Servicio</option>
-        <option value="producto">Producto</option>
-      </select>
-    </div>
-
-    <div class="card reveal">
-      <h2>Productos</h2>
-      <div id="products" class="products">
-
-  <!-- SKELETONS -->
-  <div class="product skeleton-card">
-    <div class="skeleton skeleton-title"></div>
-    <div class="skeleton skeleton-text"></div>
-    <div class="skeleton skeleton-text"></div>
-    <div class="skeleton skeleton-btn"></div>
+    <div class="spinner"></div>
   </div>
 
-  <div class="product skeleton-card">
-    <div class="skeleton skeleton-title"></div>
-    <div class="skeleton skeleton-text"></div>
-    <div class="skeleton skeleton-text"></div>
-    <div class="skeleton skeleton-btn"></div>
-  </div>
+  <header>
+    <img src="logo-impulso.png" alt="Impulso">
 
-  <div class="product skeleton-card">
-    <div class="skeleton skeleton-title"></div>
-    <div class="skeleton skeleton-text"></div>
-    <div class="skeleton skeleton-text"></div>
-    <div class="skeleton skeleton-btn"></div>
-  </div>
+    <nav>
+      <button onclick="document.getElementById('project').scrollIntoView({behavior:'smooth'})">
+        Proyecto
+      </button>
+      <button onclick="showSection('market', this)" class="active">Inicio</button>
+      <button onclick="showSection('sell', this)">Vender</button>
+      <button onclick="showSection('about', this)">Acerca</button>
+    </nav>
+  </header>
 
-</div>
+  <main>
 
-        <div class="card skeleton-card">
-  <div class="skeleton skeleton-title"></div>
-  <div class="skeleton skeleton-text"></div>
-  <div class="skeleton skeleton-text"></div>
-  <div class="skeleton skeleton-btn"></div>
-</div>
+    <!-- HERO -->
+    <section class="hero reveal">
+      <section id="project" class="card reveal">
+        <h2>Sobre IMPULSO</h2>
+        <p>
+          IMPULSO es una plataforma web diseñada para conectar emprendedores con clientes,
+          permitiendo publicar y descubrir productos o servicios de manera sencilla.
+        </p>
 
-<div class="card skeleton-card">
-  <div class="skeleton skeleton-title"></div>
-  <div class="skeleton skeleton-text"></div>
-  <div class="skeleton skeleton-text"></div>
-  <div class="skeleton skeleton-btn"></div>
-</div>
+        <h3>🎯 Objetivo</h3>
+        <p>
+          Validar la idea de un marketplace digital enfocado en emprendimientos locales,
+          usando tecnologías web modernas.
+        </p>
 
+        <h3>🛠 Tecnologías usadas</h3>
+        <ul>
+          <li>HTML5 semántico</li>
+          <li>CSS moderno (Flexbox y Grid)</li>
+          <li>JavaScript vanilla</li>
+          <li>GitHub Pages (hosting)</li>
+        </ul>
+
+        <h3>📌 Estado del proyecto</h3>
+        <p class="muted">
+          Versión 1.0 – Frontend funcional (MVP).  
+          En futuras versiones se añadirá backend, autenticación y pagos.
+        </p>
+      </section>
+
+      <h1>Impulsa tu proyecto</h1>
+      <p>Soluciones reales para crecer</p>
+    </section>
+
+    <!-- MARKET -->
+    <section id="market" class="grid reveal">
+      <!-- Filtros -->
+      <div class="card reveal">
+        <h2>Filtros</h2>
+        <label>Buscar</label>
+        <input id="search" placeholder="Producto...">
+
+        <label>Categoría</label>
+        <select id="category">
+          <option value="">Todas</option>
+          <option value="servicio">Servicio</option>
+          <option value="producto">Producto</option>
+        </select>
       </div>
-    </div>
-  </section>
 
-  <!-- SELL -->
-  <section id="sell" class="card reveal hidden">
-    <h2>Quiero vender</h2>
+      <!-- Productos -->
+      <div class="card reveal">
+        <h2>Productos</h2>
+        <div id="products" class="products">
+          <!-- Skeletons se generan dinámicamente desde JS -->
+        </div>
+      </div>
+    </section>
 
-    <form>
-      <label>Nombre</label>
-      <input type="text" required>
+    <!-- SELL -->
+    <section id="sell" class="card reveal hidden">
+      <h2>Quiero vender</h2>
 
-      <label>Correo</label>
-      <input type="email" required>
+      <form>
+        <label>Nombre</label>
+        <input type="text" required>
 
-      <label>Producto / Servicio</label>
-      <input type="text" required>
+        <label>Correo</label>
+        <input type="email" required>
 
-      <label>Precio</label>
-      <input type="number" required>
+        <label>Producto / Servicio</label>
+        <input type="text" required>
 
-      <label>Descripción</label>
-      <textarea rows="4" required></textarea>
+        <label>Precio</label>
+        <input type="number" required>
 
-      <button class="primary" type="submit">Enviar</button>
-    </form>
-  </section>
+        <label>Descripción</label>
+        <textarea rows="4" required></textarea>
 
-  <!-- ABOUT -->
-  <section id="about" class="card reveal hidden">
-    <h2>Acerca del proyecto</h2>
-    <p>
-      IMPULSO es un marketplace frontend de demostración
-      para validar ideas de emprendimiento sin pagos reales.
-    </p>
-  </section>
+        <button class="primary" type="submit">Enviar</button>
+      </form>
+    </section>
 
-</main>
+    <!-- ABOUT -->
+    <section id="about" class="card reveal hidden">
+      <h2>Acerca del proyecto</h2>
+      <p>
+        IMPULSO es un marketplace frontend de demostración
+        para validar ideas de emprendimiento sin pagos reales.
+      </p>
+    </section>
 
-<footer>
-  © 2026 IMPULSO
-</footer>
+  </main>
 
-<!-- JS -->
-<script src="script.js"></script>
+  <footer>
+    © 2026 IMPULSO
+  </footer>
+
+  <!-- JS -->
+  <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
