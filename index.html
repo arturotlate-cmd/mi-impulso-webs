@@ -1,133 +1,75 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <title>Mi Impulso Web</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0f2c">
 
-  <!-- Responsive -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- SEO -->
-  <title>IMPULSO - Plataforma de Emprendimiento</title>
-  <meta name="description" content="Plataforma para vender y descubrir productos y servicios locales">
-
-  <!-- CSS -->
-  <link rel="stylesheet" href="styles.css">
-
-  <!-- PWA -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#1E3A8A">
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-  <!-- Loader -->
-  <div id="loader">
-    <div class="spinner"></div>
+<div id="loader">Cargando...</div>
+
+<header>
+  <h1>Mi Impulso Web</h1>
+  <nav>
+    <button onclick="showSection('market', this)" class="active">Marketplace</button>
+    <button onclick="showSection('sell', this)">Vender</button>
+    <button onclick="showSection('about', this)">Acerca</button>
+  </nav>
+</header>
+
+<!-- ================= MARKET ================= -->
+<section id="market" class="visible">
+
+  <div class="filters">
+    <input type="text" id="search" placeholder="Buscar producto...">
+    <select id="category">
+      <option value="">Todas</option>
+      <option value="producto">Productos</option>
+      <option value="servicio">Servicios</option>
+    </select>
   </div>
 
-  <header>
-    <img src="logo-impulso.png" alt="Impulso" width="120">
+  <div id="products"></div>
 
-    <nav>
-      <button onclick="document.getElementById('project').scrollIntoView({behavior:'smooth'})">
-        Proyecto
-      </button>
-      <button onclick="showSection('market', this)" class="active">Inicio</button>
-      <button onclick="showSection('sell', this)">Publicar</button>
-      <button onclick="showSection('about', this)">Acerca</button>
-    </nav>
-  </header>
+</section>
 
-  <main>
+<!-- ================= SELL ================= -->
+<section id="sell" class="hidden">
 
-    <!-- HERO -->
-    <section class="hero reveal">
-      <h1>Impulsa tu emprendimiento 🚀</h1>
-      <p>Compra y vende productos o servicios locales fácilmente</p>
-      <button class="primary" onclick="showSection('sell')">Publicar mi producto</button>
-      <button onclick="showSection('market')" class="secondary">Explorar marketplace</button>
-    </section>
+  <h2>Publicar producto o servicio</h2>
 
-    <!-- INFO PROYECTO -->
-    <div id="project" class="card reveal">
-      <h2>Sobre IMPULSO</h2>
-      <p>Plataforma para conectar emprendedores con clientes.</p>
+  <form id="sellForm">
+    <input id="pName" placeholder="Nombre" required>
+    <input id="pDesc" placeholder="Descripción" required>
+    <input id="pPrice" type="number" placeholder="Precio" required>
+    
+    <select id="pCat">
+      <option value="producto">Producto</option>
+      <option value="servicio">Servicio</option>
+    </select>
 
-      <h3>Objetivo</h3>
-      <p>Validar un marketplace digital local.</p>
+    <button type="submit">Publicar</button>
+  </form>
 
-      <h3>Tecnologías</h3>
-      <ul>
-        <li>HTML, CSS, JavaScript</li>
-        <li>GitHub Pages</li>
-      </ul>
+</section>
 
-      <p class="muted">Versión 1.0 (MVP)</p>
-    </div>
+<!-- ================= ABOUT ================= -->
+<section id="about" class="hidden">
+  <h2>Mi Impulso Web</h2>
+  <p>Plataforma creada por Arturo para vender productos y servicios.</p>
+</section>
 
-    <!-- MARKET -->
-    <section id="market" class="grid reveal">
-
-      <div class="card">
-        <h2>Filtros</h2>
-        <label>Buscar</label>
-        <input id="search" placeholder="Producto o servicio...">
-
-        <label>Categoría</label>
-        <select id="category">
-          <option value="">Todas</option>
-          <option value="servicio">Servicio</option>
-          <option value="producto">Producto</option>
-        </select>
-      </div>
-
-      <div class="card">
-        <h2>Marketplace</h2>
-        <div id="products" class="products"></div>
-      </div>
-
-    </section>
-
-    <!-- SELL -->
-    <section id="sell" class="card reveal hidden">
-      <h2>Publicar producto o servicio</h2>
-
-      <form id="sellForm">
-        <label>Nombre</label>
-        <input type="text" name="nombre" required>
-
-        <label>Correo</label>
-        <input type="email" name="correo" required>
-
-        <label>Producto o servicio</label>
-        <input type="text" name="producto" required>
-
-        <label>Precio</label>
-        <input type="number" name="precio" required>
-
-        <label>Descripción</label>
-        <textarea rows="4" name="descripcion" required></textarea>
-
-        <button class="primary" type="submit">Publicar</button>
-      </form>
-    </section>
-
-    <!-- ABOUT -->
-    <section id="about" class="card reveal hidden">
-      <h2>Acerca</h2>
-      <p>Proyecto educativo sin pagos reales.</p>
-    </section>
-
-  </main>
-
-  <footer>
-    <p>© 2026 IMPULSO</p>
-    <p>Proyecto educativo. No se realizan pagos reales.</p>
-  </footer>
-
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
+
+
 
 
 
