@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IMPULSO - Plataforma de Emprendimiento</title>
+
+  <style>
+    :root {
+      --blue:#1E3A8A;
+      --dark:#111827;
+      --green:#22C55E;
+      --bg:#f3f4f6;
+      --card:#ffffff;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu; background:var(--bg); color:var(--dark)}
+    header{background:linear-gradient(135deg,var(--blue),#0f2a5f); color:white; padding:24px; display:flex; align-items:center; justify-content:center; flex-direction:column}
+    header img{max-width:180px; margin-bottom:12px}
+    header h1{margin:0; font-weight:800; letter-spacing:1px; font-size:2rem}
+    header p{color:var(--green); font-weight:600; margin-top:4px}
+    nav{display:flex; gap:12px; margin-top:16px}
+    nav button{background:white;color:var(--blue); border:none; padding:8px 14px; border-radius:10px; font-weight:600; cursor:pointer}
+    main{max-width:1100px; margin:32px auto; padding:0 16px}
+    .card{background:var(--card); border-radius:14px; padding:24px; box-shadow:0 10px 25px rgba(0,0,0,.08)}
+    .grid{display:grid; grid-template-columns:1fr 2fr; gap:20px}
+    .products{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px}
+    .product{border:1px solid #e5e7eb; border-radius:14px; padding:16px}
+    .price{font-weight:700; color:var(--blue)}
+    .muted{color:#6b7280}
+    input, textarea, select{width:100%; padding:12px; border-radius:10px; border:1px solid #d1d5db}
+    button.primary{background:var(--blue); color:white; border:none; padding:12px 16px; border-radius:12px; font-weight:700; cursor:pointer}
+    button.primary:hover{background:var(--green)}
+    footer{text-align:center; padding:28px; color:#6b7280}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+
+<body>
+
+<header>
+  <img src="logo-impulso.png" alt="IMPULSO">
+  <h1>IMPULSO</h1>
+  <p>Impulsamos personas, no solo negocios</p>
+  <nav>
+    <button onclick="showSection('market')">Mercado</button>
+    <button onclick="showSection('sell')">Vender</button>
+    <button onclick="showSection('about')">Acerca</button>
+  </nav>
+</header>
+
+<main>
+  <section id="market" class="grid">
+    <div class="card">
+      <h2>Filtros</h2>
+      <label>Buscar</label>
+      <input id="search" placeholder="Producto..." oninput="renderProducts()" />
+      <label style="margin-top:8px">Categoría</label>
+      <select id="category" onchange="renderProducts()">
+        <option value="">Todas</option>
+        <option value="servicio">Servicio</option>
+        <option value="producto">Producto</option>
+      </select>
+    </div>
+    <div class="card">
+      <h2>Productos</h2>
+      <div id="products" class="products"></div>
+    </div>
+  </section>
+
+  <section id="sell" class="card" style="display:none">
+    <h2>Quiero vender</h2>
+    <p class="muted">Formulario real: los datos se guardan en Netlify (no hay pagos).</p>
+    <form name="quiero-vender" method="POST" data-netlify="true">
+      <input type="hidden" name="form-name" value="quiero-vender">
+      <label>Nombre del vendedor</label>
+      <input type="text" name="vendedor" required />
+      <label>Correo de contacto</label>
+      <input type="email" name="correo" required />
+      <label>Nombre del producto / servicio</label>
+      <input type="text" name="producto" required />
+      <label>Precio aproximado</label>
+      <input type="number" name="precio" required />
+      <label>Categoría</label>
+      <select name="categoria">
+        <option value="producto">Producto</option>
+        <option value="servicio">Servicio</option>
+      </select>
+      <label>Descripción</label>
+      <textarea name="descripcion" rows="4" required></textarea>
+      <button class="primary" type="submit" style="margin-top:12px">Enviar solicitud</button>
+    </form>
+  </section>
+
+  <section id="about" class="card" style="display:none">
+    <h2>Acerca del proyecto</h2>
+    <p>Este sitio es un <strong>marketplace frontend</strong> de demostración. Sirve para validar la idea y el flujo comprador–vendedor sin manejar dinero real.</p>
+  </section>
+</main>
+
+<footer>
+  © 2026 IMPULSO
+</footer>
+
+<script>
+const state = {
+  products: [
+    {name:'Diseño de logo', price:500, cat:'servicio', desc:'Branding básico'},
+    {name:'Playera personalizada', price:250, cat:'producto', desc:'Algodón premium'}
+  ]
+};
+function showSection(id){
+  ['market','sell','about'].forEach(s=>document.getElementById(s).style.display='none');
+  document.getElementById(id).style.display = id==='market'?'grid':'block';
+}
+function renderProducts(){
+  const q = document.getElementById('search').value.toLowerCase();
+  const c = document.getElementById('category').value;
+  const list = state.products.filter(p =>
+    (!q || p.name.toLowerCase().includes(q)) && (!c || p.cat===c)
+  );
+  const el = document.getElementById('products');
+  el.innerHTML='';
+  list.forEach(p=>{
+    const d = document.createElement('div');
+    d.className='product';
+    d.innerHTML = `<h4>${p.name}</h4><p class="muted">${p.desc}</p><p class="price">$${p.price}</p>`;
+    el.appendChild(d);
+  });
+}
+renderProducts();
+</script>
+
+</body>
+</html>
+
