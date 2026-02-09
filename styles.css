@@ -1,27 +1,33 @@
 :root {
-  --bg-main: #0F172A;
+  --bg-main: #0f172a;
   --bg-card: #111827;
-  --border-soft: #1F2933;
+  --bg-message-me: #1e3c72;
+  --bg-message-other: #020617;
 
-  --text-main: #E5E7EB;
-  --text-muted: #9CA3AF;
+  --border-soft: #1f2933;
 
-  --accent: #C9A24D;
-  --accent-hover: #B8963E;
+  --text-main: #e5e7eb;
+  --text-muted: #9ca3af;
+
+  --accent: #c9a24d;
 }
 
+/* RESET SUAVE */
 * {
   box-sizing: border-box;
 }
 
+/* BODY */
 body {
   margin: 0;
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
   background: radial-gradient(circle at top, #111827, #020617);
   color: var(--text-main);
   padding: 40px 20px;
 }
 
+/* CONTENEDOR */
 .container {
   max-width: 520px;
   margin: auto;
@@ -32,18 +38,25 @@ body {
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
 }
 
+/* HEADER */
+header {
+  margin-bottom: 20px;
+}
+
 h1 {
+  margin: 0;
+  font-size: 1.6rem;
   font-weight: 600;
-  margin-bottom: 6px;
 }
 
 h2 {
-  font-weight: 500;
-  font-size: 1rem;
+  margin: 6px 0 0;
+  font-size: 0.95rem;
+  font-weight: 400;
   color: var(--text-muted);
-  margin-bottom: 12px;
 }
 
+/* BOTONES */
 button {
   background: transparent;
   border: 1px solid var(--accent);
@@ -52,7 +65,7 @@ button {
   border-radius: 10px;
   cursor: pointer;
   font-weight: 500;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
 }
 
 button:hover {
@@ -60,6 +73,7 @@ button:hover {
   color: #020617;
 }
 
+/* INPUT */
 input {
   width: 100%;
   background: #020617;
@@ -67,56 +81,87 @@ input {
   padding: 12px;
   border-radius: 10px;
   color: var(--text-main);
-  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 input::placeholder {
   color: var(--text-muted);
 }
 
+input:disabled {
+  opacity: 0.6;
+}
+
+/* LISTA CHAT */
 #lista {
   list-style: none;
   padding: 0;
-  margin-top: 20px;
-  max-height: 300px;
+  margin: 20px 0 0;
+  max-height: 320px;
   overflow-y: auto;
 }
 
-#lista li {
-  padding: 10px 12px;
-  background: #020617;
-  border-radius: 10px;
-  margin-bottom: 8px;
-  font-size: 0.95rem;
-  border: 1px solid var(--border-soft);
-}
-
-#lista li b {
-  color: var(--accent);
-  font-weight: 500;
-}
+/* MENSAJES */
 #lista li {
   max-width: 75%;
   padding: 10px 14px;
   border-radius: 14px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   line-height: 1.4;
-  word-wrap: break-word;
+  animation: fadeIn 0.25s ease-out;
 }
 
+/* ANIMACIÓN */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* MIS MENSAJES */
 #lista li.mio {
   margin-left: auto;
-  background: #1e3c72;
+  background: var(--bg-message-me);
   color: white;
   border-bottom-right-radius: 4px;
 }
 
+/* OTROS */
 #lista li.otro {
   margin-right: auto;
-  background: #f1f1f1;
-  color: #111;
+  background: var(--bg-message-other);
+  color: var(--text-main);
+  border: 1px solid var(--border-soft);
   border-bottom-left-radius: 4px;
 }
+
+/* AUTOR */
+.autor {
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.7;
+  margin-bottom: 2px;
+}
+
+/* TEXTO */
+.texto {
+  font-size: 0.95rem;
+}
+
+/* HORA */
+.hora {
+  font-size: 0.7rem;
+  opacity: 0.5;
+  margin-top: 4px;
+  text-align: right;
+}
+
+
 
 
 
