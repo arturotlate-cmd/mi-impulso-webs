@@ -1,30 +1,21 @@
-import { db } from "./app.js";
-import {
-  collection,
-  query,
-  orderBy,
-  onSnapshot
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { auth, db, onUserReady } from "./app.js";
+import { addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const listaServicios = document.getElementById("servicios");
+let usuario = null;
+onUserReady(u => usuario = u);
 
-if (listaServicios) {
-  const q = query(collection(db, "services"), orderBy("fecha", "desc"));
+document.getElementById("btnServicio")?.addEventListener("click", async () => {
+  if (!usuario) return alert("Inicia sesión");
 
-  onSnapshot(q, (snap) => {
-    listaServicios.innerHTML = "";
-
-    snap.forEach(doc => {
-      const s = doc.data();
-      const li = document.createElement("li");
-
-      li.innerHTML = `
-        <b>${s.titulo}</b><br>
-        ${s.descripcion}<br>
-        <small>${s.proveedor}</small>
-      `;
-
-      listaServicios.appendChild(li);
-    });
+  await addDoc(collection(db, "services"), {
+    titulo: tituloServicio.value,
+    descripcion: descripcionServicio.value,
+    precio: precioServicio.value,
+    proveedor: usuario.displayName,
+    uid: usuario.uid,
+    disponible: true,
+    fecha: serverTimestamp()
   });
-}
+
+  alert("Servicio publicado");
+});
