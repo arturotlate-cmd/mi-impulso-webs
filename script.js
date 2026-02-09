@@ -1,117 +1,159 @@
 /* ===============================
-   ESTADO GLOBAL + BASE LOCAL
+   FIREBASE IMPORTS
    =============================== */
+import { collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+/* ===============================
+   ESTADO GLOBAL
+   =============================== */
 const state = {
-  products: JSON.parse(localStorage.getItem("products")) || [
-    { name: "Diseño de logo", price: 500, cat: "servicio", desc: "Branding básico" },
-    { name: "Playera personalizada", price: 250, cat: "producto", desc: "Algodón premium" }
-  ]
+  products: []
 };
 
-function saveProducts() {
-  localStorage.setItem("products", JSON.stringify(state.products));
+/* ===============================
+   ELEMENTOS HTML
+   =============================== */
+const search = document.getElementById("search");
+const category = document.getElementById("category");
+const productsContainer = document.getElementById("products");
+const sellForm = document.querySelector("#sell form");
+
+/* ===============================
+   NAVEGACIÓN SECCIONES
+   =============================== */
+function showSection(id, btn) {
+  const sections = ["market", "sell", "about"];
+  sections.forEach(s => document.getElementById(s)?.classList.add("hidden"));
+
+  document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+  btn?.classList.add("active");
+
+  const target = document.getElementById(id);
+  if (!target) return;
+  target.classList.remove("hidden");
 }
 
 /* ===============================
-   NAVEGACIÓN
+   CARGAR PRODUCTOS DESDE FIREBASE
    =============================== */
+async function loadProducts() {
+  try {
+    const querySnapshot = await getDocs(collection(db, "products"));
+    state.products = [];
 
-function showSection(id, btn) {
-  ["market","sell","about"].forEach(s => {
-    document.getElementById(s).classList.add("hidden");
-  });
+    querySnapshot.forEach(doc => {
+      state.products.push(doc.data());
+    });
 
-  document.querySelectorAll("nav button")
-    .forEach(b => b.classList.remove("active"));
-
-  btn.classList.add("active");
-  document.getElementById(id).classList.remove("hidden");
+    renderProducts();
+  } catch (err) {
+    console.error("Error cargando productos:", err);
+  }
 }
+
+/* ===============================
+   PUBLICAR PRODUCTO ONLINE
+   =============================== */
+sellForm?.addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const inputs = sellForm.querySelectorAll("input, textarea, select");
+
+  const newProduct = {
+    name: inputs[2].value,
+    price: Number(inputs[3].value),
+    desc: inputs[4].value,
+    cat: "producto",
+    date: Date.now()
+  };
+
+  try {
+    await addDoc(collection(db, "products"), newProduct);
+    alert("Producto publicado en Internet 🚀");
+
+    sellForm.reset();
+    loadProducts();
+  } catch (err) {
+    alert("Error al publicar 😢");
+    console.error(err);
+  }
+});
 
 /* ===============================
    RENDER PRODUCTOS
    =============================== */
-
 function renderProducts() {
-  const q = search.value.toLowerCase();
-  const c = category.value;
-  const container = document.getElementById("products");
+  if (!productsContainer) return;
 
-  container.innerHTML = "";
+  const q = search?.value.toLowerCase() || "";
+  const c = category?.value || "";
 
-  state.products
-    .filter(p => (!q || p.name.toLowerCase().includes(q)) && (!c || p.cat === c))
-    .forEach(p => {
-      const card = document.createElement("div");
-      card.className = "product reveal";
-      card.innerHTML = `
-        <h4>${p.name}</h4>
-        <p>${p.desc}</p>
-        <p class="price">$${p.price}</p>
-      `;
-      container.appendChild(card);
-      observer.observe(card);
-    });
+  productsContainer.innerHTML = "";
+
+  const filtered = state.products.filter(p =>
+    (!q || p.name.toLowerCase().includes(q)) &&
+    (!c || p.cat === c)
+  );
+
+  if (filtered.length === 0) {
+    productsContainer.innerHTML = "<p>No hay productos aún</p>";
+    return;
+  }
+
+  filtered.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "product reveal";
+
+    card.innerHTML = `
+      <h4>${p.name}</h4>
+      <p>${p.desc}</p>
+      <p class="price">$${p.price}</p>
+    `;
+
+    productsContainer.appendChild(card);
+    observer.observe(card);
+  });
 }
 
 /* ===============================
-   PUBLICAR PRODUCTO
+   FILTROS
    =============================== */
-
-sellForm.addEventListener("submit", e => {
-  e.preventDefault();
-
-  const newProduct = {
-    name: pName.value,
-    desc: pDesc.value,
-    price: Number(pPrice.value),
-    cat: pCat.value
-  };
-
-  state.products.push(newProduct);
-  saveProducts();
-  renderProducts();
-  alert("Producto publicado 🚀");
-
-  e.target.reset();
-});
+search?.addEventListener("input", renderProducts);
+category?.addEventListener("change", renderProducts);
 
 /* ===============================
-   BUSCADOR Y FILTRO
+   ANIMACIÓN SCROLL REVEAL
    =============================== */
-
-search.oninput = renderProducts;
-category.onchange = renderProducts;
-
-/* ===============================
-   ANIMACIONES
-   =============================== */
-
 const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.classList.add("visible");
-      observer.unobserve(e.target);
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("visible");
+      observer.unobserve(entry.target);
     }
   });
-}, { threshold: 0.2 });
+}, { threshold: 0.15 });
+
+document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
 
 /* ===============================
    LOADER
    =============================== */
-
-window.addEventListener("load", () => {
+(function () {
   const loader = document.getElementById("loader");
-  loader.style.opacity = "0";
-  setTimeout(() => loader.remove(), 500);
-});
+  if (!loader) return;
+
+  setTimeout(() => {
+    loader.style.opacity = "0";
+    loader.style.pointerEvents = "none";
+    setTimeout(() => loader.remove(), 300);
+  }, 1200);
+})();
 
 /* ===============================
    INIT
    =============================== */
+loadProducts();
 
-renderProducts();
 
 
 
