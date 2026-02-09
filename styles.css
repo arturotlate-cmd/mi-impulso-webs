@@ -1,80 +1,38 @@
 body {
-  background: #020924;
-  color: white;
-  font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
+  font-family: Arial;
+  background:#0a0f2c;
+  color:white;
+  padding:20px;
 }
 
-.container {
-  background: #081540;
-  padding: 25px 30px;
-  border-radius: 20px;
-  width: 380px;
-  box-shadow: 0 0 25px rgba(0, 153, 255, 0.4);
-  animation: fadeIn 1s ease;
-}
-
-h1 {
-  margin-top: 0;
-  text-align: center;
-}
-
-p {
-  text-align: center;
-  color: #9ad8ff;
-}
-
-.form {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 15px;
-}
-
-input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  outline: none;
+header {
+  text-align:center;
 }
 
 button {
-  background: #00aaff;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 10px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.2s;
+  padding:10px 15px;
+  border:none;
+  border-radius:8px;
+  background:#00b4d8;
+  color:black;
+  font-weight:bold;
+  cursor:pointer;
 }
 
-button:hover {
-  background: #008cff;
-  transform: scale(1.05);
+input {
+  padding:10px;
+  border-radius:6px;
+  border:none;
+  margin:5px;
 }
 
-#listaMensajes {
-  padding: 0;
+.product {
+  background:#111;
+  padding:10px;
+  margin:10px;
+  border-radius:10px;
 }
 
-#listaMensajes li {
-  background: #0f1f5a;
-  padding: 8px;
-  margin: 6px 0;
-  border-radius: 8px;
-  list-style: none;
-  font-size: 14px;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
-}
 
 
 
