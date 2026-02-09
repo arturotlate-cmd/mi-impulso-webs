@@ -173,6 +173,13 @@ input:disabled {
   max-width: 240px;
   height: auto;
 }
+@media (max-width: 480px) {
+  .brand img {
+    max-width: 180px;
+  }
+}
+
+
 
 
 
