@@ -64,11 +64,31 @@
   <h2>Mi Impulso Web</h2>
   <p>Una plataforma creada por Arturo para vender productos y servicios online.</p>
 </section>
+<footer>© 2026 IMPULSO</footer>
+
+<script type="module">
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDS6GpjjaHOfooH6d5SgPQ8PNSReRWc8pI",
+  authDomain: "mi-impulso-web.firebaseapp.com",
+  projectId: "mi-impulso-web",
+  storageBucket: "mi-impulso-web.firebasestorage.app",
+  messagingSenderId: "1088637074350",
+  appId: "1:1088637074350:web:f2f67695cdfd9432a7e63f"
+};
+
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+</script>
+
+<script src="script.js"></script>
+
 
 <script src="script.js"></script>
 </body>
 </html>
-
 
 
 
