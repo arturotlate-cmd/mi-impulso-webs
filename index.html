@@ -92,6 +92,119 @@ input {
 </body>
 
 <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+/* CONFIG */
+const firebaseConfig = {
+  apiKey: "AIzaSyDS6GpjjaHOfooH6d5SgPQ8PNSReRWc8pI",
+  authDomain: "mi-impulso-web.firebaseapp.com",
+  projectId: "mi-impulso-web",
+  storageBucket: "mi-impulso-web.appspot.com",
+  messagingSenderId: "1088637074350",
+  appId: "1:1088637074350:web:f2f67695cdfd9432a7e63f"
+};
+
+/* INIT */
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+
+/* UI */
+const btnLogin = document.getElementById("btnLogin");
+const btnLogout = document.getElementById("btnLogout");
+const inputMensaje = document.getElementById("mensaje");
+const lista = document.getElementById("lista");
+
+let usuario = null;
+
+/* AUTH STATE */
+onAuthStateChanged(auth, (user) => {
+  usuario = user;
+
+  if (user) {
+    btnLogin.style.display = "none";
+    btnLogout.style.display = "inline-block";
+    inputMensaje.disabled = false;
+    inputMensaje.placeholder = "Escribe tu mensaje…";
+  } else {
+    btnLogin.style.display = "inline-block";
+    btnLogout.style.display = "none";
+    inputMensaje.disabled = true;
+    inputMensaje.placeholder = "Inicia sesión para escribir…";
+  }
+});
+
+/* LOGIN */
+window.loginGoogle = async () => {
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+/* LOGOUT */
+window.logout = async () => {
+  try {
+    await signOut(auth);
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+/* SEND MESSAGE */
+window.guardar = async () => {
+  const texto = inputMensaje.value.trim();
+  if (!texto || !usuario) return;
+
+  await addDoc(collection(db, "mensajes"), {
+    texto,
+    user: usuario.displayName,
+    uid: usuario.uid,
+    fecha: new Date()
+  });
+
+  inputMensaje.value = "";
+};
+
+/* FORMAT TIME */
+function formatearHora(fecha) {
+  if (!fecha) return "";
+  const f = fecha.toDate ? fecha.toDate() : new Date(fecha);
+  return f.toLocaleTimeString("es-ES", {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+
+/* READ CHAT */
+const q = query(collection(db, "mensajes"), orderBy("fecha"));
+
+onSnapshot(q, (snapshot) => {
+  lista.innerHTML = "";
+
+  snapshot.forEach(doc => {
+    const d = doc.data();
+    const li = document.createElement("li");
+
+    const esMio = usuario && d.uid === usuario.uid;
+    li.classList.add(esMio ? "mio" : "otro");
+
+    li.innerHTML = `
+      ${!esMio ? `<div class="autor">${d.user}</div>` : ""}
+      <div class="texto">${d.texto}</div>
+      <div class="hora">${formatearHora(d.fecha)}</div>
+    `;
+
+    lista.appendChild(li);
+  });
+
+  lista.scrollTop = lista.scrollHeight;
+});
+</script>
 // FIREBASE
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -177,22 +290,26 @@ onSnapshot(q, (snapshot) => {
     const d = doc.data();
     const li = document.createElement("li");
 
-    if (usuario && d.uid === usuario.uid) {
-      li.classList.add("mio");
-    } else {
-      li.classList.add("otro");
-    }
+    const esMio = usuario && d.uid === usuario.uid;
+    li.classList.add(esMio ? "mio" : "otro");
 
-    li.innerHTML = `<span>${d.texto}</span>`;
+    li.innerHTML = `
+      ${!esMio ? `<div class="autor">${d.user}</div>` : ""}
+      <div class="texto">${d.texto}</div>
+      <div class="hora">${formatearHora(d.fecha)}</div>
+    `;
+
     lista.appendChild(li);
   });
 
   lista.scrollTop = lista.scrollHeight;
 });
+
 </script>
 
 </body>
 </html>
+
 
 
 
