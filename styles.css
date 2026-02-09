@@ -1,15 +1,21 @@
 :root {
-  --bg-main: #0f172a;
-  --bg-card: #111827;
-  --bg-message-me: #1e3c72;
+  /* Fondos */
+  --bg-main: #0b1220;
+  --bg-card: #0f172a;
+
+  /* Mensajes */
+  --bg-message-me: #1e40af;     /* azul logo */
   --bg-message-other: #020617;
 
-  --border-soft: #1f2933;
+  /* Bordes */
+  --border-soft: #1e293b;
 
+  /* Texto */
   --text-main: #e5e7eb;
   --text-muted: #9ca3af;
 
-  --accent: #c9a24d;
+  /* Acento (verde del logo) */
+  --accent: #22c55e;
 }
 
 /* RESET SUAVE */
@@ -160,6 +166,7 @@ input:disabled {
   margin-top: 4px;
   text-align: right;
 }
+
 
 
 
