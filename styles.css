@@ -326,6 +326,20 @@ footer {
     transform: translateY(0);
   }
 }
+/* === FAILSAFE: nunca bloquear la web === */
+#loader {
+  animation: killLoader 0.1s ease forwards;
+  animation-delay: 3s; /* máximo 3 segundos */
+}
+
+@keyframes killLoader {
+  to {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
 
 
 
