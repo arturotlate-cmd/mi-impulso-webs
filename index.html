@@ -46,6 +46,43 @@
 
  <!-- Firebase SDK -->
   <script type="module">
+    let currentChatProduct = null;
+let chatUnsub = null;
+
+// Abrir chat
+window.openChat = (productId, seller) => {
+  if (!currentUser) return alert("Inicia sesión");
+
+  currentChatProduct = productId;
+  document.getElementById("privateChat").style.display = "block";
+
+  // Escuchar mensajes del producto
+  if (chatUnsub) chatUnsub(); // cerrar chat anterior
+
+  const chatRef = collection(db, "chats", productId, "messages");
+
+  chatUnsub = onSnapshot(chatRef, (snap) => {
+    privateChatBox.innerHTML = "";
+    snap.forEach(doc => {
+      const m = doc.data();
+      privateChatBox.innerHTML += `<p><b>${m.user}:</b> ${m.msg}</p>`;
+    });
+  });
+};
+
+// Enviar mensaje privado
+document.getElementById("sendPrivate").onclick = async () => {
+  if (!currentChatProduct) return;
+
+  await addDoc(collection(db, "chats", currentChatProduct, "messages"), {
+    user: currentUser.displayName,
+    uid: currentUser.uid,
+    msg: privateMsg.value,
+    time: Date.now()
+  });
+
+  privateMsg.value = "";
+};
     // 🔥 IMPORTANTE: Aquí pega tu configuración de Firebase
     import { initializeApp } from "firebase/app";
     mport { getAnalytics } from "firebase/analytics";
@@ -101,21 +138,16 @@ document.getElementById("publishBtn").onclick = async () => {
 };
 
 // ================= MOSTRAR PRODUCTOS =================
-onSnapshot(collection(db, "products"), (snap) => {
-  products.innerHTML = "";
-  snap.forEach(doc => {
-    const p = doc.data();
-    products.innerHTML += `
-      <div class="product">
-        <img src="${p.imgURL}" width="150">
-        <h3>${p.name}</h3>
-        <p>${p.desc}</p>
-        <b>$${p.price}</b>
-        <p>Vendedor: ${p.user}</p>
-      </div>
-    `;
-  });
-});
+products.innerHTML += `
+<div class="product">
+  <img src="${p.imgURL}" width="150">
+  <h3>${p.name}</h3>
+  <p>${p.desc}</p>
+  <b>$${p.price}</b>
+  <p>Vendedor: ${p.user}</p>
+  <button onclick="openChat('${doc.id}', '${p.user}')">Contactar vendedor</button>
+</div>
+`;
 
 // ================= CHAT =================
 document.getElementById("sendChat").onclick = async () => {
@@ -141,6 +173,13 @@ onSnapshot(collection(db, "chat"), (snap) => {
 
 </body>
 </html>
+<section id="privateChat" style="display:none;">
+  <h2>Chat con vendedor</h2>
+  <div id="privateChatBox"></div>
+  <input id="privateMsg" placeholder="Mensaje...">
+  <button id="sendPrivate">Enviar</button>
+</section>
+
 
 
 
