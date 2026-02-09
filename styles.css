@@ -217,6 +217,35 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+button.secondary {
+  background: transparent;
+  border: 2px solid var(--blue);
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button.secondary:hover {
+  background: var(--blue);
+  color: white;
+}
+
+/* 📱 MOBILE */
+@media (max-width: 600px) {
+  header img {
+    max-width: 100px;
+  }
+
+  nav {
+    flex-direction: column;
+  }
+
+  .hero h1 {
+    font-size: 1.7rem;
+  }
+}
+
 
 
 
