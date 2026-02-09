@@ -7,27 +7,34 @@
 
   <!-- CSS -->
   <link rel="stylesheet" href="styles.css">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1E3A8A">
 </head>
 
 <body>
 
 <header>
-  <img src="logo-impulso.png.png" alt="Impulso">
+  <img src="logo-impulso.png" alt="Impulso">
+
   <nav>
-    <button onclick="showSection('market')">Inicio</button>
-    <button onclick="showSection('sell')">Vender</button>
-    <button onclick="showSection('about')">Acerca</button>
+    <button onclick="showSection('market', this)" class="active">Inicio</button>
+    <button onclick="showSection('sell', this)">Vender</button>
+    <button onclick="showSection('about', this)">Acerca</button>
   </nav>
 </header>
 
 <main>
 
-  <section class="hero fade-in">
+  <!-- HERO -->
+  <section class="hero reveal">
     <h1>Impulsa tu proyecto</h1>
     <p>Soluciones reales para crecer</p>
   </section>
 
-  <section id="market" class="grid fade-in">
+  <!-- MARKET -->
+  <section id="market" class="grid reveal">
     <div class="card">
       <h2>Filtros</h2>
       <label>Buscar</label>
@@ -47,21 +54,37 @@
     </div>
   </section>
 
-  <section id="sell" class="card fade-in hidden">
+  <!-- SELL -->
+  <section id="sell" class="card reveal hidden">
     <h2>Quiero vender</h2>
+
     <form>
-      <input placeholder="Nombre" required>
-      <input type="email" placeholder="Correo" required>
-      <input placeholder="Producto / Servicio" required>
-      <input type="number" placeholder="Precio" required>
-      <textarea placeholder="Descripción" rows="4" required></textarea>
-      <button class="primary">Enviar</button>
+      <label>Nombre</label>
+      <input type="text" required>
+
+      <label>Correo</label>
+      <input type="email" required>
+
+      <label>Producto / Servicio</label>
+      <input type="text" required>
+
+      <label>Precio</label>
+      <input type="number" required>
+
+      <label>Descripción</label>
+      <textarea rows="4" required></textarea>
+
+      <button class="primary" type="submit">Enviar</button>
     </form>
   </section>
 
-  <section id="about" class="card fade-in hidden">
+  <!-- ABOUT -->
+  <section id="about" class="card reveal hidden">
     <h2>Acerca del proyecto</h2>
-    <p>Marketplace frontend de demostración para validar ideas.</p>
+    <p>
+      IMPULSO es un marketplace frontend de demostración
+      para validar ideas de emprendimiento sin pagos reales.
+    </p>
   </section>
 
 </main>
@@ -74,6 +97,8 @@
 <script src="script.js"></script>
 </body>
 </html>
+
+
 
 
 
