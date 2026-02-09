@@ -160,3 +160,19 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+.hero {
+  text-align: center;
+  margin: 48px 0 32px;
+}
+
+.hero h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  color: #6b7280;
+}
+
