@@ -2,29 +2,32 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <title>Mi Impulso Web</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Impulso Webs</title>
+  <meta name="theme-color" content="#0a0f2c">
 
-  <!-- Estilos -->
   <link rel="stylesheet" href="styles.css">
-
-  <!-- Manifest (PWA) -->
-  <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
 
+<div class="container">
+
   <h1>Mi Impulso Webs 🚀</h1>
+  <h3>Guardar mensaje en la nube</h3>
 
-  <h2>Guardar mensaje en la nube</h2>
+  <div class="form">
+    <input id="nombre" placeholder="Tu nombre">
+    <input id="mensaje" placeholder="Tu mensaje">
+    <button onclick="guardarMensaje()">Enviar</button>
+  </div>
 
-  <input id="nombre" placeholder="Tu nombre">
-  <input id="mensaje" placeholder="Tu mensaje">
-  <button onclick="guardarMensaje()">Enviar</button>
-
-  <h2>Mensajes guardados:</h2>
+  <h3>Mensajes guardados:</h3>
   <ul id="listaMensajes"></ul>
 
-  <!-- Firebase SDK -->
+</div>
+
+ <!-- Firebase SDK -->
   <script type="module">
     // 🔥 IMPORTANTE: Aquí pega tu configuración de Firebase
     import { initializeApp } from "firebase/app";
@@ -44,44 +47,38 @@
     // Inicializar Firebase
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
-    
-    // Guardar mensaje
-    window.guardarMensaje = function() {
-      const nombre = document.getElementById("nombre").value;
-      const mensaje = document.getElementById("mensaje").value;
 
-      if (nombre === "" || mensaje === "") {
-        alert("Escribe algo primero");
-        return;
-      }
+window.guardarMensaje = async function () {
+  const nombre = document.getElementById("nombre").value;
+  const mensaje = document.getElementById("mensaje").value;
 
-      const mensajesRef = ref(db, "mensajes");
-      push(mensajesRef, {
-        nombre,
-        mensaje,
-        fecha: Date.now()
-      });
+  if (!nombre || !mensaje) return alert("Escribe algo");
 
-      document.getElementById("mensaje").value = "";
-    };
+  await addDoc(collection(db, "mensajes"), {
+    nombre,
+    mensaje,
+    fecha: new Date()
+  });
 
-    // Mostrar mensajes en tiempo real
-    const mensajesRef = ref(db, "mensajes");
-    onValue(mensajesRef, (snapshot) => {
-      const lista = document.getElementById("listaMensajes");
-      lista.innerHTML = "";
+  document.getElementById("mensaje").value = "";
+};
 
-      snapshot.forEach((child) => {
-        const data = child.val();
-        const li = document.createElement("li");
-        li.textContent = data.nombre + ": " + data.mensaje;
-        lista.appendChild(li);
-      });
-    });
-  </script>
+const lista = document.getElementById("listaMensajes");
+
+onSnapshot(collection(db, "mensajes"), (snapshot) => {
+  lista.innerHTML = "";
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    const li = document.createElement("li");
+    li.textContent = data.nombre + ": " + data.mensaje;
+    lista.appendChild(li);
+  });
+});
+</script>
 
 </body>
 </html>
+
 
 
 
