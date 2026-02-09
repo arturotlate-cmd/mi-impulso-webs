@@ -163,4 +163,13 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+#project ul {
+  padding-left: 18px;
+}
+
+#project li {
+  margin-bottom: 6px;
+}
+
+
 
