@@ -1,31 +1,48 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Mi Impulso Webs</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0a0f2c">
-
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<title>Mi Impulso Web</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-<div class="container">
+<header>
+  <h1>Mi Impulso Web 🚀</h1>
 
-  <h1>🚀 Mi Impulso Webs</h1>
-  <p>Guardar mensaje en la nube (Firebase)</p>
+  <button id="loginBtn">Iniciar sesión con Google</button>
+  <button id="logoutBtn" style="display:none;">Cerrar sesión</button>
 
-  <div class="form">
-    <input id="nombre" placeholder="Tu nombre">
-    <input id="mensaje" placeholder="Tu mensaje">
-    <button id="btnEnviar">Enviar</button>
-  </div>
+  <p id="userInfo"></p>
+</header>
 
-  <h3>📩 Mensajes guardados:</h3>
-  <ul id="listaMensajes"></ul>
+<!-- PUBLICAR -->
+<section id="sell">
+<h2>Publicar producto</h2>
 
-</div>
+<input id="pName" placeholder="Nombre">
+<input id="pDesc" placeholder="Descripción">
+<input id="pPrice" type="number" placeholder="Precio">
+<input type="file" id="pImage">
+
+<button id="publishBtn">Publicar</button>
+</section>
+
+<!-- MARKETPLACE -->
+<section>
+<h2>Marketplace</h2>
+<div id="products"></div>
+</section>
+
+<!-- CHAT -->
+<section>
+<h2>Chat</h2>
+<div id="chatBox"></div>
+<input id="chatMsg" placeholder="Mensaje...">
+<button id="sendChat">Enviar</button>
+</section>
 
  <!-- Firebase SDK -->
   <script type="module">
@@ -48,47 +65,83 @@
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
 
-// Guardar mensaje
-window.guardarMensaje = async function () {
-  const nombre = document.getElementById("nombre").value;
-  const mensaje = document.getElementById("mensaje").value;
-
-  if (!nombre || !mensaje) {
-    alert("Escribe tu nombre y mensaje");
-    return;
-  }
-
-  await addDoc(collection(db, "mensajes"), {
-    nombre,
-    mensaje,
-    fecha: new Date()
-  });
-
-  document.getElementById("mensaje").value = "";
+// ================= LOGIN =================
+document.getElementById("loginBtn").onclick = async () => {
+  const result = await signInWithPopup(auth, provider);
+  currentUser = result.user;
+  document.getElementById("userInfo").innerText = "Hola " + currentUser.displayName;
+  document.getElementById("loginBtn").style.display = "none";
+  document.getElementById("logoutBtn").style.display = "inline";
 };
 
-// Mostrar mensajes en tiempo real
-const lista = document.getElementById("listaMensajes");
+document.getElementById("logoutBtn").onclick = () => {
+  signOut(auth);
+  location.reload();
+};
 
-onSnapshot(collection(db, "mensajes"), (snapshot) => {
-  lista.innerHTML = "";
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    const li = document.createElement("li");
-    li.textContent = data.nombre + ": " + data.mensaje;
-    lista.appendChild(li);
+// ================= PUBLICAR PRODUCTO =================
+document.getElementById("publishBtn").onclick = async () => {
+  if (!currentUser) return alert("Inicia sesión");
+
+  const name = pName.value;
+  const desc = pDesc.value;
+  const price = pPrice.value;
+  const file = pImage.files[0];
+
+  const imgRef = ref(storage, "products/" + Date.now());
+  await uploadBytes(imgRef, file);
+  const imgURL = await getDownloadURL(imgRef);
+
+  await addDoc(collection(db, "products"), {
+    name, desc, price, imgURL,
+    user: currentUser.displayName
+  });
+
+  alert("Producto publicado");
+};
+
+// ================= MOSTRAR PRODUCTOS =================
+onSnapshot(collection(db, "products"), (snap) => {
+  products.innerHTML = "";
+  snap.forEach(doc => {
+    const p = doc.data();
+    products.innerHTML += `
+      <div class="product">
+        <img src="${p.imgURL}" width="150">
+        <h3>${p.name}</h3>
+        <p>${p.desc}</p>
+        <b>$${p.price}</b>
+        <p>Vendedor: ${p.user}</p>
+      </div>
+    `;
   });
 });
 
-// Botón
-document.getElementById("btnEnviar").addEventListener("click", guardarMensaje);
+// ================= CHAT =================
+document.getElementById("sendChat").onclick = async () => {
+  if (!currentUser) return alert("Inicia sesión");
+
+  await addDoc(collection(db, "chat"), {
+    user: currentUser.displayName,
+    msg: chatMsg.value,
+    time: Date.now()
+  });
+
+  chatMsg.value = "";
+};
+
+onSnapshot(collection(db, "chat"), (snap) => {
+  chatBox.innerHTML = "";
+  snap.forEach(doc => {
+    const m = doc.data();
+    chatBox.innerHTML += `<p><b>${m.user}:</b> ${m.msg}</p>`;
+  });
+});
 </script>
 
 </body>
 </html>
 
-</body>
-</html>
 
 
 
