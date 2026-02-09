@@ -3,10 +3,70 @@
 <head>
 <meta charset="UTF-8">
 <title>Mi Impulso Web</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: white;
+  text-align: center;
+  padding: 30px;
+}
+
+.container {
+  background: white;
+  color: black;
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+h1 {
+  color: #ff6f00;
+}
+
+button {
+  background: #ff6f00;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 5px;
+}
+
+button:hover {
+  background: #ff9100;
+}
+
+input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: 70%;
+}
+
+#lista {
+  text-align: left;
+  margin-top: 10px;
+}
+
+#lista li {
+  background: #f1f1f1;
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 8px;
+}
+</style>
+
 </head>
 <body>
 
-<h1>🔥 Mi Impulso Web con Firebase</h1>
+<div class="container">
+<h1>🔥 Mi Impulso Web</h1>
 
 <button onclick="loginGoogle()">Login con Google</button>
 <button onclick="logout()">Cerrar sesión</button>
@@ -14,10 +74,11 @@
 <br><br>
 
 <input id="mensaje" placeholder="Escribe un mensaje">
-<button onclick="guardar()">Guardar mensaje</button>
+<button onclick="guardar()">Enviar</button>
 
-<h2>Mensajes:</h2>
+<h2>💬 Chat en vivo</h2>
 <ul id="lista"></ul>
+</div>
 
 <script type="module">
 // FIREBASE
@@ -41,10 +102,13 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-// LOGIN GOOGLE
+let usuario = null;
+
+// LOGIN
 window.loginGoogle = async () => {
   const result = await signInWithPopup(auth, provider);
-  alert("Bienvenido " + result.user.displayName);
+  usuario = result.user;
+  alert("Bienvenido " + usuario.displayName);
 };
 
 // LOGOUT
@@ -56,41 +120,34 @@ window.logout = async () => {
 // GUARDAR MENSAJE
 window.guardar = async () => {
   const texto = document.getElementById("mensaje").value;
-  if (!texto) return alert("Escribe algo");
+  if (!texto) return;
 
   await addDoc(collection(db, "mensajes"), {
     texto: texto,
+    user: usuario ? usuario.displayName : "Anonimo",
     fecha: new Date()
   });
 
   document.getElementById("mensaje").value = "";
 };
 
-// LEER MENSAJES EN TIEMPO REAL
+// LEER CHAT
 const q = query(collection(db, "mensajes"), orderBy("fecha"));
 onSnapshot(q, (snapshot) => {
   const lista = document.getElementById("lista");
   lista.innerHTML = "";
-
   snapshot.forEach(doc => {
+    const d = doc.data();
     const li = document.createElement("li");
-    li.textContent = doc.data().texto;
+    li.innerHTML = `<b>${d.user}:</b> ${d.texto}`;
     lista.appendChild(li);
   });
-});
-
-// VER USUARIO
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    console.log("Usuario conectado:", user.email);
-  } else {
-    console.log("No hay usuario");
-  }
 });
 </script>
 
 </body>
 </html>
+
 
 
 
