@@ -12,14 +12,13 @@
 <header>
   <h1>Mi Impulso Web 🚀</h1>
 
-  <button id="loginBtn">Iniciar sesión con Google</button>
+  <button id="loginBtn">Iniciar sesión</button>
   <button id="logoutBtn" style="display:none;">Cerrar sesión</button>
-
   <p id="userInfo"></p>
 </header>
 
 <!-- PUBLICAR -->
-<section id="sell">
+<section>
 <h2>Publicar producto</h2>
 
 <input id="pName" placeholder="Nombre">
@@ -44,10 +43,8 @@
   <button id="sendPrivate">Enviar</button>
 </section>
 
-<!-- Firebase -->
+<!-- FIREBASE -->
 <script type="module">
-
-// 🔥 IMPORTS FIREBASE
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -66,13 +63,14 @@ const firebaseConfig = {
 // INIT
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
 const storage = getStorage(app);
+const provider = new GoogleAuthProvider();
 
 let currentUser = null;
+let currentChatProduct = null;
 
-// ================= LOGIN =================
+// LOGIN
 loginBtn.onclick = async () => {
   const result = await signInWithPopup(auth, provider);
   currentUser = result.user;
@@ -86,44 +84,71 @@ logoutBtn.onclick = () => {
   location.reload();
 };
 
-// ================= PUBLICAR PRODUCTO =================
+// PUBLICAR
 publishBtn.onclick = async () => {
   if (!currentUser) return alert("Inicia sesión");
 
-  const name = pName.value;
-  const desc = pDesc.value;
-  const price = pPrice.value;
   const file = pImage.files[0];
-
   const imgRef = ref(storage, "products/" + Date.now());
   await uploadBytes(imgRef, file);
   const imgURL = await getDownloadURL(imgRef);
 
   await addDoc(collection(db, "products"), {
-    name, desc, price, imgURL,
+    name: pName.value,
+    desc: pDesc.value,
+    price: pPrice.value,
+    imgURL,
     user: currentUser.displayName
   });
 
-  alert("Producto publicado");
+  alert("Publicado!");
 };
 
-// ================= MOSTRAR PRODUCTOS =================
+// MOSTRAR PRODUCTOS
 onSnapshot(collection(db, "products"), (snap) => {
   products.innerHTML = "";
   snap.forEach(doc => {
     const p = doc.data();
     products.innerHTML += `
-    <div class="product">
-      <img src="${p.imgURL}" width="150">
-      <h3>${p.name}</h3>
-      <p>${p.desc}</p>
-      <b>$${p.price}</b>
-      <p>Vendedor: ${p.user}</p>
-      <button onclick="openChat('${doc.id}')">Contactar vendedor</button>
-    </div>
+      <div class="product">
+        <img src="${p.imgURL}" width="150">
+        <h3>${p.name}</h3>
+        <p>${p.desc}</p>
+        <b>$${p.price}</b>
+        <p>Vendedor: ${p.user}</p>
+        <button onclick="openChat('${doc.id}')">Contactar vendedor</button>
+      </div>
     `;
   });
 });
+
+// CHAT PRIVADO
+window.openChat = (id) => {
+  if (!currentUser) return alert("Inicia sesión");
+  currentChatProduct = id;
+  privateChat.style.display = "block";
+
+  onSnapshot(collection(db, "chats", id, "messages"), (snap) => {
+    privateChatBox.innerHTML = "";
+    snap.forEach(doc => {
+      const m = doc.data();
+      privateChatBox.innerHTML += `<p><b>${m.user}:</b> ${m.msg}</p>`;
+    });
+  });
+};
+
+sendPrivate.onclick = async () => {
+  await addDoc(collection(db, "chats", currentChatProduct, "messages"), {
+    user: currentUser.displayName,
+    msg: privateMsg.value,
+    time: Date.now()
+  });
+  privateMsg.value = "";
+};
+</script>
+
+</body>
+</html>
 
 // ================= CHAT PRIVADO =================
 let currentChatProduct = null;
@@ -149,6 +174,7 @@ onSnapshot(collection(db, "chats"), () => {});
 
 </body>
 </html>
+
 
 
 
