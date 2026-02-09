@@ -3,14 +3,14 @@
    =============================== */
 
 const state = {
-  products: [
+  products: JSON.parse(localStorage.getItem("products")) || [
     { name: 'Diseño de logo', price: 500, cat: 'servicio', desc: 'Branding básico' },
     { name: 'Playera personalizada', price: 250, cat: 'producto', desc: 'Algodón premium' }
   ]
 };
 
 /* ===============================
-   2. NAVEGACIÓN DE SECCIONES
+   2. NAVEGACIÓN
    =============================== */
 
 function showSection(id, btn) {
@@ -30,26 +30,23 @@ function showSection(id, btn) {
   if (!target) return;
 
   target.classList.remove('hidden');
-
-  // reiniciar animación
   target.classList.remove('visible');
   void target.offsetWidth;
   target.classList.add('visible');
 }
 
 /* ===============================
-   3. RENDER DE PRODUCTOS
+   3. RENDER PRODUCTOS
    =============================== */
 
 function renderProducts() {
   const search = document.getElementById('search');
   const category = document.getElementById('category');
   const container = document.getElementById('products');
-
   if (!container) return;
 
-  const q = search ? search.value.toLowerCase() : '';
-  const c = category ? category.value : '';
+  const q = search?.value.toLowerCase() || '';
+  const c = category?.value || '';
 
   const filtered = state.products.filter(p =>
     (!q || p.name.toLowerCase().includes(q)) &&
@@ -66,55 +63,84 @@ function renderProducts() {
       <h4>${p.name}</h4>
       <p>${p.desc}</p>
       <p class="price">$${p.price}</p>
+      <small>${p.cat}</small>
     `;
 
     container.appendChild(card);
-    observer.observe(card); // animación al aparecer
+    observer.observe(card);
   });
 }
 
 /* ===============================
-   4. ANIMACIONES (UNA SOLA LÓGICA)
+   4. BUSCADOR EN TIEMPO REAL
    =============================== */
 
-const observer = new IntersectionObserver(
-  entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target); // solo una vez
-      }
-    });
-  },
-  { threshold: 0.15 }
-);
+document.getElementById("search")?.addEventListener("input", renderProducts);
+document.getElementById("category")?.addEventListener("change", renderProducts);
 
-// observar elementos iniciales
+/* ===============================
+   5. FORMULARIO VENDER
+   =============================== */
+
+const form = document.getElementById("sellForm");
+
+if (form) {
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+
+    const data = new FormData(form);
+
+    const newProduct = {
+      name: data.get("producto"),
+      price: data.get("precio"),
+      cat: "producto",
+      desc: data.get("descripcion")
+    };
+
+    state.products.push(newProduct);
+    localStorage.setItem("products", JSON.stringify(state.products));
+
+    alert("Producto agregado al marketplace 😎");
+    form.reset();
+    showSection("market");
+    renderProducts();
+  });
+}
+
+/* ===============================
+   6. ANIMACIONES SCROLL
+   =============================== */
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 /* ===============================
-   5. LOADER (FAILSAFE)
+   7. LOADER
    =============================== */
 
-(function () {
-  const loader = document.getElementById('loader');
+window.addEventListener("load", () => {
+  const loader = document.getElementById("loader");
   if (!loader) return;
 
-  setTimeout(() => {
-    loader.style.opacity = '0';
-    loader.style.pointerEvents = 'none';
-
-    setTimeout(() => {
-      loader.remove();
-    }, 300);
-  }, 1200);
-})();
+  loader.style.opacity = "0";
+  setTimeout(() => loader.remove(), 500);
+});
 
 /* ===============================
    INIT
    =============================== */
 
 renderProducts();
+
+
 
 
 
