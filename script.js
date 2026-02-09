@@ -88,6 +88,27 @@ const revealObserver = new IntersectionObserver((entries) => {
 document.querySelectorAll('.reveal').forEach(el => {
   revealObserver.observe(el);
 });
+/* ===============================
+   LOADER INICIAL (seguro)
+   =============================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+  const loader = document.getElementById("loader");
+
+  // Si no existe, no hacemos nada
+  if (!loader) return;
+
+  // Quitamos loader pase lo que pase
+  setTimeout(() => {
+    loader.style.opacity = "0";
+    loader.style.pointerEvents = "none";
+
+    setTimeout(() => {
+      loader.remove();
+    }, 400);
+  }, 700);
+});
+
 
 
 
