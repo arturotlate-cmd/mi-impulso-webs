@@ -2,8 +2,13 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+
+  <!-- Responsive -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
   <title>IMPULSO - Plataforma de Emprendimiento</title>
+  <meta name="description" content="IMPULSO es una plataforma para emprendedores donde puedes vender y descubrir productos y servicios locales.">
 
   <!-- CSS -->
   <link rel="stylesheet" href="styles.css">
@@ -14,13 +19,15 @@
 </head>
 
 <body>
-  <!-- Loader inicial -->
+
+  <!-- Loader -->
   <div id="loader">
     <div class="spinner"></div>
   </div>
 
+  <!-- HEADER -->
   <header>
-    <img src="logo-impulso.png" alt="Impulso">
+    <img src="logo-impulso.png" alt="Impulso" width="120">
 
     <nav>
       <button onclick="document.getElementById('project').scrollIntoView({behavior:'smooth'})">
@@ -36,45 +43,49 @@
 
     <!-- HERO -->
     <section class="hero reveal">
-      <section id="project" class="card reveal">
-        <h2>Sobre IMPULSO</h2>
-        <p>
-          IMPULSO es una plataforma web diseñada para conectar emprendedores con clientes,
-          permitiendo publicar y descubrir productos o servicios de manera sencilla.
-        </p>
-
-        <h3>🎯 Objetivo</h3>
-        <p>
-          Validar la idea de un marketplace digital enfocado en emprendimientos locales,
-          usando tecnologías web modernas.
-        </p>
-
-        <h3>🛠 Tecnologías usadas</h3>
-        <ul>
-          <li>HTML5 semántico</li>
-          <li>CSS moderno (Flexbox y Grid)</li>
-          <li>JavaScript vanilla</li>
-          <li>GitHub Pages (hosting)</li>
-        </ul>
-
-        <h3>📌 Estado del proyecto</h3>
-        <p class="muted">
-          Versión 1.0 – Frontend funcional (MVP).  
-          En futuras versiones se añadirá backend, autenticación y pagos.
-        </p>
-      </section>
-
-      <h1>Impulsa tu proyecto</h1>
-      <p>Soluciones reales para crecer</p>
+      <h1>Impulsa tu proyecto 🚀</h1>
+      <p>Conecta con clientes y vende tus productos o servicios</p>
+      <button class="primary" onclick="showSection('market')">Explorar marketplace</button>
     </section>
+
+    <!-- PROJECT INFO -->
+    <div id="project" class="card reveal">
+      <h2>Sobre IMPULSO</h2>
+      <p>
+        IMPULSO es una plataforma web diseñada para conectar emprendedores con clientes,
+        permitiendo publicar y descubrir productos o servicios de manera sencilla.
+      </p>
+
+      <h3>🎯 Objetivo</h3>
+      <p>
+        Validar la idea de un marketplace digital enfocado en emprendimientos locales,
+        usando tecnologías web modernas.
+      </p>
+
+      <h3>🛠 Tecnologías usadas</h3>
+      <ul>
+        <li>HTML5 semántico</li>
+        <li>CSS moderno (Flexbox y Grid)</li>
+        <li>JavaScript vanilla</li>
+        <li>GitHub Pages (hosting)</li>
+      </ul>
+
+      <h3>📌 Estado del proyecto</h3>
+      <p class="muted">
+        Versión 1.0 – Frontend funcional (MVP).  
+        En futuras versiones se añadirá backend, autenticación y pagos.
+      </p>
+    </div>
 
     <!-- MARKET -->
     <section id="market" class="grid reveal">
+
       <!-- Filtros -->
       <div class="card reveal">
         <h2>Filtros</h2>
+
         <label>Buscar</label>
-        <input id="search" placeholder="Producto...">
+        <input id="search" placeholder="Producto o servicio...">
 
         <label>Categoría</label>
         <select id="category">
@@ -88,30 +99,31 @@
       <div class="card reveal">
         <h2>Productos</h2>
         <div id="products" class="products">
-          <!-- Skeletons se generan dinámicamente desde JS -->
+          <!-- JS pondrá los productos aquí -->
         </div>
       </div>
+
     </section>
 
     <!-- SELL -->
     <section id="sell" class="card reveal hidden">
       <h2>Quiero vender</h2>
 
-      <form>
+      <form id="sellForm">
         <label>Nombre</label>
-        <input type="text" required>
+        <input type="text" name="nombre" required>
 
         <label>Correo</label>
-        <input type="email" required>
+        <input type="email" name="correo" required>
 
         <label>Producto / Servicio</label>
-        <input type="text" required>
+        <input type="text" name="producto" required>
 
         <label>Precio</label>
-        <input type="number" required>
+        <input type="number" name="precio" required>
 
         <label>Descripción</label>
-        <textarea rows="4" required></textarea>
+        <textarea rows="4" name="descripcion" required></textarea>
 
         <button class="primary" type="submit">Enviar</button>
       </form>
@@ -121,8 +133,8 @@
     <section id="about" class="card reveal hidden">
       <h2>Acerca del proyecto</h2>
       <p>
-        IMPULSO es un marketplace frontend de demostración
-        para validar ideas de emprendimiento sin pagos reales.
+        IMPULSO es un marketplace de demostración para validar ideas de emprendimiento
+        sin pagos reales. Este proyecto es solo educativo.
       </p>
     </section>
 
@@ -136,6 +148,8 @@
   <script src="script.js"></script>
 </body>
 </html>
+
+
 
 
 
