@@ -1,3 +1,7 @@
+/* ===============================
+   1. ESTADO GLOBAL
+   =============================== */
+
 const state = {
   products: [
     { name: 'Diseño de logo', price: 500, cat: 'servicio', desc: 'Branding básico' },
@@ -5,10 +9,16 @@ const state = {
   ]
 };
 
-/* CAMBIO DE SECCIONES */
+/* ===============================
+   2. NAVEGACIÓN DE SECCIONES
+   =============================== */
+
 function showSection(id, btn) {
-  ['market', 'sell', 'about'].forEach(s => {
-    document.getElementById(s).classList.add('hidden');
+  const sections = ['market', 'sell', 'about'];
+
+  sections.forEach(s => {
+    const el = document.getElementById(s);
+    if (el) el.classList.add('hidden');
   });
 
   document.querySelectorAll('nav button')
@@ -16,119 +26,97 @@ function showSection(id, btn) {
 
   if (btn) btn.classList.add('active');
 
-  const section = document.getElementById(id);
-  section.classList.remove('hidden');
+  const target = document.getElementById(id);
+  if (!target) return;
 
-  section.classList.remove('visible');
-  void section.offsetWidth;
-  section.classList.add('visible');
+  target.classList.remove('hidden');
+
+  // reiniciar animación
+  target.classList.remove('visible');
+  void target.offsetWidth;
+  target.classList.add('visible');
 }
 
-/* RENDER PRODUCTOS */
-function renderProducts() {
-  const q = document.getElementById('search').value.toLowerCase();
-  const c = document.getElementById('category').value;
+/* ===============================
+   3. RENDER DE PRODUCTOS
+   =============================== */
 
-  const list = state.products.filter(p =>
+function renderProducts() {
+  const search = document.getElementById('search');
+  const category = document.getElementById('category');
+  const container = document.getElementById('products');
+
+  if (!container) return;
+
+  const q = search ? search.value.toLowerCase() : '';
+  const c = category ? category.value : '';
+
+  const filtered = state.products.filter(p =>
     (!q || p.name.toLowerCase().includes(q)) &&
     (!c || p.cat === c)
   );
 
-  const el = document.getElementById('products');
-  el.innerHTML = '';
+  container.innerHTML = '';
 
-  list.forEach(p => {
-    const d = document.createElement('div');
-    d.className = 'product reveal visible';
-    d.innerHTML = `
+  filtered.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'product reveal';
+
+    card.innerHTML = `
       <h4>${p.name}</h4>
       <p>${p.desc}</p>
       <p class="price">$${p.price}</p>
     `;
-    el.appendChild(d);
+
+    container.appendChild(card);
+    observer.observe(card); // animación al aparecer
   });
 }
 
-/* ANIMACIONES AL SCROLL */
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-    }
-  });
-}, { threshold: 0.15 });
-
-document.querySelectorAll('.reveal')
-  .forEach(el => observer.observe(el));
-
-renderProducts();
-// === ANIMACIÓN DE ENTRADA ===
-// === ANIMACIÓN SOLO LA PRIMERA VEZ ===
-const alreadyAnimated = localStorage.getItem('impulso_animated');
-
-if (!alreadyAnimated) {
-  document.querySelectorAll('.card, .product, .hero').forEach(el => {
-    el.classList.add('fade-in');
-  });
-
-  localStorage.setItem('impulso_animated', 'true');
-}
-// === ANIMACIÓN AL HACER SCROLL ===
-const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      revealObserver.unobserve(entry.target);
-    }
-  });
-}, {
-  threshold: 0.15
-});
-
-document.querySelectorAll('.reveal').forEach(el => {
-  revealObserver.observe(el);
-});
 /* ===============================
-   LOADER INICIAL (seguro)
+   4. ANIMACIONES (UNA SOLA LÓGICA)
    =============================== */
 
-document.addEventListener("DOMContentLoaded", () => {
-  const loader = document.getElementById("loader");
+const observer = new IntersectionObserver(
+  entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target); // solo una vez
+      }
+    });
+  },
+  { threshold: 0.15 }
+);
 
-  // Si no existe, no hacemos nada
-  if (!loader) return;
+// observar elementos iniciales
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  // Quitamos loader pase lo que pase
-  setTimeout(() => {
-    loader.style.opacity = "0";
-    loader.style.pointerEvents = "none";
-
-    setTimeout(() => {
-      loader.remove();
-    }, 400);
-  }, 700);
-});
 /* ===============================
-   LOADER – SOLUCIÓN DEFINITIVA
+   5. LOADER (FAILSAFE)
    =============================== */
 
 (function () {
-  const loader = document.getElementById("loader");
-
+  const loader = document.getElementById('loader');
   if (!loader) return;
 
-  // Corte duro: pase lo que pase
   setTimeout(() => {
-    loader.style.opacity = "0";
-    loader.style.pointerEvents = "none";
+    loader.style.opacity = '0';
+    loader.style.pointerEvents = 'none';
 
     setTimeout(() => {
-      if (loader.parentNode) {
-        loader.parentNode.removeChild(loader);
-      }
+      loader.remove();
     }, 300);
   }, 1200);
 })();
+
+/* ===============================
+   INIT
+   =============================== */
+
+renderProducts();
+
+
 
 
 
