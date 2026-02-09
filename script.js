@@ -1,84 +1,92 @@
-/* ================= STATE ================= */
+/* ===============================
+   ESTADO GLOBAL + BASE LOCAL
+   =============================== */
 
 const state = {
   products: JSON.parse(localStorage.getItem("products")) || [
-    { name: "Pastelería Sofía", price: 120, cat: "producto", desc: "Pasteles caseros" },
-    { name: "Clases de matemáticas", price: 80, cat: "servicio", desc: "Online y presencial" },
-    { name: "Diseño web", price: 1500, cat: "servicio", desc: "Sitios profesionales" }
+    { name: "Diseño de logo", price: 500, cat: "servicio", desc: "Branding básico" },
+    { name: "Playera personalizada", price: 250, cat: "producto", desc: "Algodón premium" }
   ]
 };
 
-/* ================= NAV ================= */
-
-function showSection(id, btn) {
-  ["market", "sell", "about"].forEach(s => {
-    document.getElementById(s)?.classList.add("hidden");
-  });
-
-  document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
-  if (btn) btn.classList.add("active");
-
-  const target = document.getElementById(id);
-  if (!target) return;
-
-  target.classList.remove("hidden");
-  target.classList.add("visible");
+function saveProducts() {
+  localStorage.setItem("products", JSON.stringify(state.products));
 }
 
-/* ================= RENDER ================= */
+/* ===============================
+   NAVEGACIÓN
+   =============================== */
+
+function showSection(id, btn) {
+  ["market","sell","about"].forEach(s => {
+    document.getElementById(s).classList.add("hidden");
+  });
+
+  document.querySelectorAll("nav button")
+    .forEach(b => b.classList.remove("active"));
+
+  btn.classList.add("active");
+  document.getElementById(id).classList.remove("hidden");
+}
+
+/* ===============================
+   RENDER PRODUCTOS
+   =============================== */
 
 function renderProducts() {
-  const search = document.getElementById("search")?.value.toLowerCase() || "";
-  const cat = document.getElementById("category")?.value || "";
+  const q = search.value.toLowerCase();
+  const c = category.value;
   const container = document.getElementById("products");
-  if (!container) return;
 
   container.innerHTML = "";
 
   state.products
-    .filter(p => (!search || p.name.toLowerCase().includes(search)) && (!cat || p.cat === cat))
+    .filter(p => (!q || p.name.toLowerCase().includes(q)) && (!c || p.cat === c))
     .forEach(p => {
-      const div = document.createElement("div");
-      div.className = "product reveal";
-      div.innerHTML = `
+      const card = document.createElement("div");
+      card.className = "product reveal";
+      card.innerHTML = `
         <h4>${p.name}</h4>
         <p>${p.desc}</p>
         <p class="price">$${p.price}</p>
-        <small>${p.cat}</small>
       `;
-      container.appendChild(div);
-      observer.observe(div);
+      container.appendChild(card);
+      observer.observe(card);
     });
 }
 
-/* ================= BUSCADOR ================= */
+/* ===============================
+   PUBLICAR PRODUCTO
+   =============================== */
 
-document.getElementById("search")?.addEventListener("input", renderProducts);
-document.getElementById("category")?.addEventListener("change", renderProducts);
-
-/* ================= FORM ================= */
-
-document.getElementById("sellForm")?.addEventListener("submit", e => {
+sellForm.addEventListener("submit", e => {
   e.preventDefault();
-  const data = new FormData(e.target);
 
-  const product = {
-    name: data.get("producto"),
-    price: data.get("precio"),
-    cat: "producto",
-    desc: data.get("descripcion")
+  const newProduct = {
+    name: pName.value,
+    desc: pDesc.value,
+    price: Number(pPrice.value),
+    cat: pCat.value
   };
 
-  state.products.push(product);
-  localStorage.setItem("products", JSON.stringify(state.products));
-
-  alert("Publicado correctamente 🚀");
-  e.target.reset();
-  showSection("market");
+  state.products.push(newProduct);
+  saveProducts();
   renderProducts();
+  alert("Producto publicado 🚀");
+
+  e.target.reset();
 });
 
-/* ================= ANIMACIONES ================= */
+/* ===============================
+   BUSCADOR Y FILTRO
+   =============================== */
+
+search.oninput = renderProducts;
+category.onchange = renderProducts;
+
+/* ===============================
+   ANIMACIONES
+   =============================== */
 
 const observer = new IntersectionObserver(entries => {
   entries.forEach(e => {
@@ -87,27 +95,24 @@ const observer = new IntersectionObserver(entries => {
       observer.unobserve(e.target);
     }
   });
-});
+}, { threshold: 0.2 });
 
-document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
-
-/* ================= LOADER ================= */
+/* ===============================
+   LOADER
+   =============================== */
 
 window.addEventListener("load", () => {
   const loader = document.getElementById("loader");
-  if (!loader) return;
-  loader.style.opacity = 0;
+  loader.style.opacity = "0";
   setTimeout(() => loader.remove(), 500);
 });
 
-/* ================= GUARDAR ================= */
+/* ===============================
+   INIT
+   =============================== */
 
-window.addEventListener("beforeunload", () => {
-  localStorage.setItem("products", JSON.stringify(state.products));
-});
-
-/* INIT */
 renderProducts();
+
 
 
 
