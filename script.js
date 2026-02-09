@@ -1,71 +1,120 @@
 /* ===============================
-   RENDER DE PRODUCTOS CON SKELETONS REALISTAS
+   1. ESTADO GLOBAL
    =============================== */
+
+const state = {
+  products: [
+    { name: 'Diseño de logo', price: 500, cat: 'servicio', desc: 'Branding básico' },
+    { name: 'Playera personalizada', price: 250, cat: 'producto', desc: 'Algodón premium' }
+  ]
+};
+
+/* ===============================
+   2. NAVEGACIÓN DE SECCIONES
+   =============================== */
+
+function showSection(id, btn) {
+  const sections = ['market', 'sell', 'about'];
+
+  sections.forEach(s => {
+    const el = document.getElementById(s);
+    if (el) el.classList.add('hidden');
+  });
+
+  document.querySelectorAll('nav button')
+    .forEach(b => b.classList.remove('active'));
+
+  if (btn) btn.classList.add('active');
+
+  const target = document.getElementById(id);
+  if (!target) return;
+
+  target.classList.remove('hidden');
+
+  // reiniciar animación
+  target.classList.remove('visible');
+  void target.offsetWidth;
+  target.classList.add('visible');
+}
+
+/* ===============================
+   3. RENDER DE PRODUCTOS
+   =============================== */
+
 function renderProducts() {
   const search = document.getElementById('search');
   const category = document.getElementById('category');
   const container = document.getElementById('products');
+
   if (!container) return;
 
   const q = search ? search.value.toLowerCase() : '';
   const c = category ? category.value : '';
 
-  // FILTRAR DATOS
   const filtered = state.products.filter(p =>
     (!q || p.name.toLowerCase().includes(q)) &&
     (!c || p.cat === c)
   );
 
-  // LIMPIAR CONTENEDOR
   container.innerHTML = '';
 
-  // === CREAR SKELETONS REALISTAS ===
-  const skeletonCount = Math.max(filtered.length, 3);
-  for (let i = 0; i < skeletonCount; i++) {
-    const skel = document.createElement('div');
-    skel.className = 'product skeleton-card';
+  filtered.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'product reveal';
 
-    // tamaños aleatorios para simular variación
-    const titleWidth = 40 + Math.floor(Math.random() * 40); // 40% a 80%
-    const textWidth1 = 50 + Math.floor(Math.random() * 50); // 50% a 100%
-    const textWidth2 = 40 + Math.floor(Math.random() * 60); // 40% a 100%
-    const btnWidth = 30 + Math.floor(Math.random() * 40); // 30% a 70%
-
-    skel.innerHTML = `
-      <div class="skeleton skeleton-title" style="width:${titleWidth}%"></div>
-      <div class="skeleton skeleton-text" style="width:${textWidth1}%"></div>
-      <div class="skeleton skeleton-text" style="width:${textWidth2}%"></div>
-      <div class="skeleton skeleton-btn" style="width:${btnWidth}%"></div>
+    card.innerHTML = `
+      <h4>${p.name}</h4>
+      <p>${p.desc}</p>
+      <p class="price">$${p.price}</p>
     `;
-    container.appendChild(skel);
-  }
 
-  // SIMULA LA CARGA DE DATOS
-  setTimeout(() => {
-    container.innerHTML = '';
-
-    if (filtered.length === 0) {
-      const empty = document.createElement('p');
-      empty.textContent = "No se encontraron productos.";
-      container.appendChild(empty);
-      return;
-    }
-
-    // RENDERIZAR PRODUCTOS REALES
-    filtered.forEach(p => {
-      const card = document.createElement('div');
-      card.className = 'product reveal real-content';
-      card.innerHTML = `
-        <h4>${p.name}</h4>
-        <p>${p.desc}</p>
-        <p class="price">$${p.price}</p>
-        <button class="primary">Comprar</button>
-      `;
-      container.appendChild(card);
-      observer.observe(card);
-    });
-  }, 1200);
+    container.appendChild(card);
+    observer.observe(card); // animación al aparecer
+  });
 }
+
+/* ===============================
+   4. ANIMACIONES (UNA SOLA LÓGICA)
+   =============================== */
+
+const observer = new IntersectionObserver(
+  entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target); // solo una vez
+      }
+    });
+  },
+  { threshold: 0.15 }
+);
+
+// observar elementos iniciales
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ===============================
+   5. LOADER (FAILSAFE)
+   =============================== */
+
+(function () {
+  const loader = document.getElementById('loader');
+  if (!loader) return;
+
+  setTimeout(() => {
+    loader.style.opacity = '0';
+    loader.style.pointerEvents = 'none';
+
+    setTimeout(() => {
+      loader.remove();
+    }, 300);
+  }, 1200);
+})();
+
+/* ===============================
+   INIT
+   =============================== */
+
+renderProducts();
 
 
 
