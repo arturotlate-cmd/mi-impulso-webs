@@ -2,34 +2,30 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Chat Privado Firestore</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Impulso Web</title>
 </head>
 <body>
 
-<h2>🔥 Chat privado Firestore</h2>
+<h1>🔥 Mi Impulso Web con Firebase</h1>
 
-<button id="loginGoogle">Login Google</button>
-<button id="logout">Salir</button>
+<button onclick="loginGoogle()">Login con Google</button>
+<button onclick="logout()">Cerrar sesión</button>
 
-<p id="user"></p>
+<br><br>
 
-<div id="chat" style="display:none;">
-  <input id="msg" placeholder="Escribe mensaje">
-  <button id="send">Enviar</button>
-  <div id="messages"></div>
-</div>
+<input id="mensaje" placeholder="Escribe un mensaje">
+<button onclick="guardar()">Guardar mensaje</button>
+
+<h2>Mensajes:</h2>
+<ul id="lista"></ul>
 
 <script type="module">
-  
-<!-- FIREBASE -->
-<script type="module">
+// FIREBASE
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔥 TU CONFIG
+// CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyDS6GpjjaHOfooH6d5SgPQ8PNSReRWc8pI",
   authDomain: "mi-impulso-web.firebaseapp.com",
@@ -39,68 +35,64 @@ const firebaseConfig = {
   appId: "1:1088637074350:web:f2f67695cdfd9432a7e63f"
 };
 
-// INIT
+// INICIAR
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const storage = getStorage(app);
 const provider = new GoogleAuthProvider();
 
-let currentUser = null;
-let currentChatProduct = null;
-
-// ================= LOGIN =================
-const provider = new GoogleAuthProvider();
-
-document.getElementById("loginGoogle").onclick = () => {
-  signInWithPopup(auth, provider);
+// LOGIN GOOGLE
+window.loginGoogle = async () => {
+  const result = await signInWithPopup(auth, provider);
+  alert("Bienvenido " + result.user.displayName);
 };
 
-document.getElementById("logout").onclick = () => signOut(auth);
+// LOGOUT
+window.logout = async () => {
+  await signOut(auth);
+  alert("Sesión cerrada");
+};
 
-// ================= USUARIO =================
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    document.getElementById("user").innerText = "Usuario: " + user.displayName;
-    document.getElementById("chat").style.display = "block";
-    loadMessages(user.uid);
-  } else {
-    document.getElementById("chat").style.display = "none";
-  }
+// GUARDAR MENSAJE
+window.guardar = async () => {
+  const texto = document.getElementById("mensaje").value;
+  if (!texto) return alert("Escribe algo");
+
+  await addDoc(collection(db, "mensajes"), {
+    texto: texto,
+    fecha: new Date()
+  });
+
+  document.getElementById("mensaje").value = "";
+};
+
+// LEER MENSAJES EN TIEMPO REAL
+const q = query(collection(db, "mensajes"), orderBy("fecha"));
+onSnapshot(q, (snapshot) => {
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+
+  snapshot.forEach(doc => {
+    const li = document.createElement("li");
+    li.textContent = doc.data().texto;
+    lista.appendChild(li);
+  });
 });
 
-// ================= ENVIAR MENSAJE PRIVADO =================
-document.getElementById("send").onclick = async () => {
-  const user = auth.currentUser;
-  const msg = document.getElementById("msg").value;
-  if (!user || !msg) return;
-
-  await addDoc(collection(db, "privateChat", user.uid, "messages"), {
-    name: user.displayName,
-    uid: user.uid,
-    text: msg,
-    time: Date.now()
-  });
-
-  document.getElementById("msg").value = "";
-};
-
-// ================= LEER MENSAJES PRIVADOS =================
-function loadMessages(uid) {
-  const q = query(collection(db, "privateChat", uid, "messages"), orderBy("time"));
-
-  onSnapshot(q, (snap) => {
-    document.getElementById("messages").innerHTML = "";
-    snap.forEach(doc => {
-      const m = doc.data();
-      document.getElementById("messages").innerHTML += `<p><b>${m.name}:</b> ${m.text}</p>`;
-    });
-  });
-}
+// VER USUARIO
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log("Usuario conectado:", user.email);
+  } else {
+    console.log("No hay usuario");
+  }
+});
 </script>
 
 </body>
 </html>
+
+
 
 
 
