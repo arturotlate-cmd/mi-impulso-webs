@@ -8,7 +8,7 @@
 
   <!-- SEO -->
   <title>IMPULSO - Plataforma de Emprendimiento</title>
-  <meta name="description" content="IMPULSO es una plataforma para emprendedores donde puedes vender y descubrir productos y servicios locales.">
+  <meta name="description" content="Plataforma para vender y descubrir productos y servicios locales">
 
   <!-- CSS -->
   <link rel="stylesheet" href="styles.css">
@@ -25,7 +25,6 @@
     <div class="spinner"></div>
   </div>
 
-  <!-- HEADER -->
   <header>
     <img src="logo-impulso.png" alt="Impulso" width="120">
 
@@ -34,7 +33,7 @@
         Proyecto
       </button>
       <button onclick="showSection('market', this)" class="active">Inicio</button>
-      <button onclick="showSection('sell', this)">Vender</button>
+      <button onclick="showSection('sell', this)">Publicar</button>
       <button onclick="showSection('about', this)">Acerca</button>
     </nav>
   </header>
@@ -43,47 +42,34 @@
 
     <!-- HERO -->
     <section class="hero reveal">
-      <h1>Impulsa tu proyecto 🚀</h1>
-      <p>Conecta con clientes y vende tus productos o servicios</p>
-      <button class="primary" onclick="showSection('market')">Explorar marketplace</button>
+      <h1>Impulsa tu emprendimiento 🚀</h1>
+      <p>Compra y vende productos o servicios locales fácilmente</p>
+      <button class="primary" onclick="showSection('sell')">Publicar mi producto</button>
+      <button onclick="showSection('market')" class="secondary">Explorar marketplace</button>
     </section>
 
-    <!-- PROJECT INFO -->
+    <!-- INFO PROYECTO -->
     <div id="project" class="card reveal">
       <h2>Sobre IMPULSO</h2>
-      <p>
-        IMPULSO es una plataforma web diseñada para conectar emprendedores con clientes,
-        permitiendo publicar y descubrir productos o servicios de manera sencilla.
-      </p>
+      <p>Plataforma para conectar emprendedores con clientes.</p>
 
-      <h3>🎯 Objetivo</h3>
-      <p>
-        Validar la idea de un marketplace digital enfocado en emprendimientos locales,
-        usando tecnologías web modernas.
-      </p>
+      <h3>Objetivo</h3>
+      <p>Validar un marketplace digital local.</p>
 
-      <h3>🛠 Tecnologías usadas</h3>
+      <h3>Tecnologías</h3>
       <ul>
-        <li>HTML5 semántico</li>
-        <li>CSS moderno (Flexbox y Grid)</li>
-        <li>JavaScript vanilla</li>
-        <li>GitHub Pages (hosting)</li>
+        <li>HTML, CSS, JavaScript</li>
+        <li>GitHub Pages</li>
       </ul>
 
-      <h3>📌 Estado del proyecto</h3>
-      <p class="muted">
-        Versión 1.0 – Frontend funcional (MVP).  
-        En futuras versiones se añadirá backend, autenticación y pagos.
-      </p>
+      <p class="muted">Versión 1.0 (MVP)</p>
     </div>
 
     <!-- MARKET -->
     <section id="market" class="grid reveal">
 
-      <!-- Filtros -->
-      <div class="card reveal">
+      <div class="card">
         <h2>Filtros</h2>
-
         <label>Buscar</label>
         <input id="search" placeholder="Producto o servicio...">
 
@@ -95,19 +81,16 @@
         </select>
       </div>
 
-      <!-- Productos -->
-      <div class="card reveal">
-        <h2>Productos</h2>
-        <div id="products" class="products">
-          <!-- JS pondrá los productos aquí -->
-        </div>
+      <div class="card">
+        <h2>Marketplace</h2>
+        <div id="products" class="products"></div>
       </div>
 
     </section>
 
     <!-- SELL -->
     <section id="sell" class="card reveal hidden">
-      <h2>Quiero vender</h2>
+      <h2>Publicar producto o servicio</h2>
 
       <form id="sellForm">
         <label>Nombre</label>
@@ -116,7 +99,7 @@
         <label>Correo</label>
         <input type="email" name="correo" required>
 
-        <label>Producto / Servicio</label>
+        <label>Producto o servicio</label>
         <input type="text" name="producto" required>
 
         <label>Precio</label>
@@ -125,29 +108,28 @@
         <label>Descripción</label>
         <textarea rows="4" name="descripcion" required></textarea>
 
-        <button class="primary" type="submit">Enviar</button>
+        <button class="primary" type="submit">Publicar</button>
       </form>
     </section>
 
     <!-- ABOUT -->
     <section id="about" class="card reveal hidden">
-      <h2>Acerca del proyecto</h2>
-      <p>
-        IMPULSO es un marketplace de demostración para validar ideas de emprendimiento
-        sin pagos reales. Este proyecto es solo educativo.
-      </p>
+      <h2>Acerca</h2>
+      <p>Proyecto educativo sin pagos reales.</p>
     </section>
 
   </main>
 
   <footer>
-    © 2026 IMPULSO
+    <p>© 2026 IMPULSO</p>
+    <p>Proyecto educativo. No se realizan pagos reales.</p>
   </footer>
 
-  <!-- JS -->
   <script src="script.js"></script>
 </body>
 </html>
+
+
 
 
 
