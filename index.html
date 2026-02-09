@@ -65,20 +65,33 @@ input {
 </head>
 <body>
 
-<div class="container">
-<h1>🔥 Mi Impulso Web</h1>
+  <div class="container">
+    
+  <header>
+<h1>IMPULSO</h1>
+  <h2>Comunicación en tiempo real</h2>
+    </header>
 
-<button onclick="loginGoogle()">Login con Google</button>
-<button onclick="logout()">Cerrar sesión</button>
+<section style="margin: 20px 0;">
+    <button onclick="loginGoogle()">Iniciar sesión</button>
+    <button onclick="logout()">Cerrar sesión</button>
+  </section>
 
-<br><br>
+  <section>
+<input id="mensaje" placeholder="Escribe tu mensaje">
+<button onclick="guardar()" style="width:100%; margin-top:10px;">
+  Enviar mensaje
+  </button>
+ </section>
+    
+ <section>
+    <h2>Conversación</h2>
+    <ul id="lista"></ul>
+  </section>
 
-<input id="mensaje" placeholder="Escribe un mensaje">
-<button onclick="guardar()">Enviar</button>
-
-<h2>💬 Chat en vivo</h2>
-<ul id="lista"></ul>
 </div>
+
+</body>
 
 <script type="module">
 // FIREBASE
@@ -147,6 +160,7 @@ onSnapshot(q, (snapshot) => {
 
 </body>
 </html>
+
 
 
 
