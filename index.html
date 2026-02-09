@@ -1,216 +1,44 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>IMPULSO</title>
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #B94A3E, #121B22);
-  color: white;
-  text-align: center;
-  padding: 30px;
-}
-
-.container {
-  background: white;
-  color: black;
-  max-width: 500px;
-  margin: auto;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
-
-h1 {
-  color: #1e3c72;
-}
-
-button {
-  background: #a3581d;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  margin: 5px;
-}
-
-button:hover {
-  background: #d98c27;
-}
-
-input {
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  width: 70%;
-}
-
-#lista {
-  text-align: left;
-  margin-top: 10px;
-}
-
-#lista li {
-  background: #f1f1f1;
-  padding: 8px;
-  margin: 5px 0;
-  border-radius: 8px;
-}
-</style>
-
+  <meta charset="UTF-8">
+  <title>IMPULSO | Marketplace</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
 
+<body>
   <div class="container">
-    
-  <header>
-<h1>IMPULSO</h1>
-  <h2>Comunicación en tiempo real</h2>
+    <header>
+      <h1>IMPULSO</h1>
+      <h2>Compra y vende en tiempo real</h2>
     </header>
 
-<section style="margin: 20px 0;">
-  <button id="btnLogin" onclick="loginGoogle()">Iniciar sesión</button>
-  <button id="btnLogout" onclick="logout()" style="display:none;">
-    Cerrar sesión
-  </button>
-</section>
-<input id="mensaje" placeholder="Escribe tu mensaje">
-<button onclick="guardar()" style="width:100%; margin-top:10px;">
-  Enviar mensaje
-  </button>
+    <section>
+      <button id="btnLogin">Iniciar sesión</button>
+      <button id="btnLogout" style="display:none;">Cerrar sesión</button>
+      <a href="perfil.html">Mi perfil</a>
+    </section>
 
-    <h2>Conversación</h2>
-    <ul id="lista"></ul>
-  </section>
+    <hr>
 
-</div>
+    <h3>Publicar producto</h3>
 
+    <input id="titulo" placeholder="Título del producto">
+    <input id="precio" type="number" placeholder="Precio">
+    <textarea id="descripcion" placeholder="Descripción"></textarea>
+    <button id="btnPublicar">Publicar</button>
+
+    <hr>
+
+    <h3>Productos</h3>
+    <ul id="productos"></ul>
+  </div>
+
+  <script type="module" src="app.js"></script>
+  <script type="module" src="products.js"></script>
 </body>
+</html>
 
-<script type="module">
-// FIREBASE
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  onSnapshot,
-  query,
-  orderBy,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-// CONFIG
-const firebaseConfig = {
-  apiKey: "AIzaSyDS6GpjjaHOfooH6d5SgPQ8PNSReRWc8pI",
-  authDomain: "mi-impulso-web.firebaseapp.com",
-  projectId: "mi-impulso-web",
-  storageBucket: "mi-impulso-web.appspot.com",
-  messagingSenderId: "1088637074350",
-  appId: "1:1088637074350:web:f2f67695cdfd9432a7e63f"
-};
-
-// INIT
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
-
-// UI
-const btnLogin = document.getElementById("btnLogin");
-const btnLogout = document.getElementById("btnLogout");
-const btnEnviar = document.getElementById("btnEnviar");
-const inputMensaje = document.getElementById("mensaje");
-const lista = document.getElementById("lista");
-
-let usuario = null;
-
-// AUTH STATE
-onAuthStateChanged(auth, (user) => {
-  usuario = user;
-
-  if (user) {
-    btnLogin.style.display = "none";
-    btnLogout.style.display = "inline-block";
-    inputMensaje.disabled = false;
-    inputMensaje.placeholder = "Escribe tu mensaje…";
-  } else {
-    btnLogin.style.display = "inline-block";
-    btnLogout.style.display = "none";
-    inputMensaje.disabled = true;
-    inputMensaje.placeholder = "Inicia sesión para escribir…";
-  }
-});
-
-// LOGIN
-btnLogin.addEventListener("click", async () => {
-  await signInWithPopup(auth, provider);
-});
-
-// LOGOUT
-btnLogout.addEventListener("click", async () => {
-  await signOut(auth);
-});
-
-// ENVIAR MENSAJE
-btnEnviar.addEventListener("click", async () => {
-  const texto = inputMensaje.value.trim();
-  if (!texto || !usuario) return;
-
-  await addDoc(collection(db, "mensajes"), {
-    texto,
-    uid: usuario.uid,
-    user: usuario.displayName,
-    fecha: serverTimestamp()
-  });
-
-  inputMensaje.value = "";
-});
-
-// FORMATO HORA
-function formatearHora(fecha) {
-  if (!fecha) return "";
-  return fecha.toDate().toLocaleTimeString("es-ES", {
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-}
-
-// LEER CHAT
-const q = query(collection(db, "mensajes"), orderBy("fecha"));
-
-onSnapshot(q, (snapshot) => {
-  lista.innerHTML = "";
-
-  snapshot.forEach((doc) => {
-    const d = doc.data();
-    const li = document.createElement("li");
-
-    const esMio = usuario && d.uid === usuario.uid;
-    li.className = esMio ? "mio" : "otro";
-
-    li.innerHTML = `
-      ${!esMio ? `<div class="autor">${d.user}</div>` : ""}
-      <div class="texto">${d.texto}</div>
-      <div class="hora">${formatearHora(d.fecha)}</div>
-    `;
-
-    lista.appendChild(li);
-  });
-
-  lista.scrollTop = lista.scrollHeight;
-});
 
 
 
