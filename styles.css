@@ -1,55 +1,353 @@
-/* ===============================
-   SKELETON PREMIUM (idéntico a cards)
-   =============================== */
-.skeleton-card {
-  pointer-events: none;
-  opacity: 0.85;
+:root {
+  --blue:#1E3A8A;
+  --dark:#111827;
+  --green:#22C55E;
+  --bg:#f3f4f6;
+  --card:#ffffff;
+}
 
-  /* Mismo estilo que las cards reales */
+* { box-sizing: border-box }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto;
+  background: var(--bg);
+  color: var(--dark);
+}
+
+/* HEADER */
+header {
+  background: linear-gradient(135deg, var(--blue), #0f2a5f);
+  color: white;
+  padding: 24px;
+  text-align: center;
+}
+
+header img {
+  max-width: 170px;
+  margin-bottom: 10px;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+nav button {
+  background: white;
+  color: var(--blue);
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .3s ease;
+}
+
+nav button:hover {
+  background: var(--green);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* MAIN */
+main {
+  max-width: 1100px;
+  margin: 32px auto;
+  padding: 0 16px;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+/* CARDS */
+.card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.08);
+  margin-bottom: 24px;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 20px;
+}
+
+/* PRODUCTS */
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.product {
+  border: 1px solid #e5e7eb;
   border-radius: 14px;
   padding: 16px;
-  background: var(--card);
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 10px 25px rgba(0,0,0,.08);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
 
-  /* Transición suave */
+.product:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0,0,0,.12);
+}
+
+.price {
+  font-weight: 700;
+  color: var(--blue);
+}
+
+/* FORM */
+input, textarea, select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  margin-bottom: 10px;
+}
+
+button.primary {
+  background: var(--blue);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .3s ease;
+}
+
+button.primary:hover {
+  background: var(--green);
+}
+
+/* ANIMATIONS */
+.fade-in {
+  animation: fadeIn .6s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 28px;
+  color: #6b7280;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+.hero {
+  text-align: center;
+  margin: 48px 0 32px;
+}
+
+.hero h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  color: #6b7280;
+}
+.card {
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 35px rgba(0,0,0,.12);
+}
+.product {
   transition: transform .2s ease, border-color .2s ease;
 }
 
-.skeleton-card:hover {
+.product:hover {
   transform: scale(1.02);
   border-color: #1E3A8A;
 }
+/* === ANIMACIÓN DE ENTRADA SUAVE === */
 
-/* Shimmer dinámico */
+.fade-in {
+  animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* === ANIMACIÓN DE ENTRADA SUAVE === */
+
+.fade-in {
+  animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* === ANIMACIÓN AL HACER SCROLL === */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* ===============================
+   LOADER INICIAL (pantalla completa)
+   =============================== */
+
+#loader {
+  position: fixed;
+  inset: 0;
+  background: #0f172a; /* azul oscuro pro */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.4s ease;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===============================
+   SKELETON LOADING
+   =============================== */
+
 .skeleton {
-  height: 14px;
-  margin-bottom: 8px;
-  border-radius: 6px;
-  background: linear-gradient(90deg,#e5e7eb 25%,#f3f4f6 37%,#e5e7eb 63%);
+  background: linear-gradient(
+    90deg,
+    #e5e7eb 25%,
+    #f3f4f6 37%,
+    #e5e7eb 63%
+  );
   background-size: 400px 100%;
-  animation: shimmer 1.8s infinite;
+  animation: shimmer 1.2s infinite;
+  border-radius: 6px;
 }
 
-/* Tamaños predefinidos */
-.skeleton-title { height: 22px; margin-bottom: 12px; }
-.skeleton-text { height: 14px; margin-bottom: 8px; }
-.skeleton-btn { height: 36px; margin-top: 12px; border-radius: 12px; }
-
-/* Shimmer animation */
 @keyframes shimmer {
-  0% { background-position: -500px 0; }
-  100% { background-position: 500px 0; }
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
 }
 
-/* Mantener coherencia con products reales */
-.product.real-content {
-  transition: transform .2s ease, box-shadow .2s ease;
+.skeleton-title {
+  height: 22px;
+  width: 60%;
+  margin-bottom: 12px;
 }
-.product.real-content:hover {
-  transform: scale(1.02);
-  border-color: #1E3A8A;
+
+.skeleton-text {
+  height: 14px;
+  width: 100%;
+  margin-bottom: 8px;
 }
+
+.skeleton-btn {
+  height: 36px;
+  width: 40%;
+  margin-top: 12px;
+}
+/* ===============================
+   CONTENEDOR SKELETON
+   =============================== */
+
+.skeleton-card {
+  pointer-events: none; /* no clickeable */
+  opacity: 0.85;
+}
+
+/* ===============================
+   OPCIONAL: transición suave al mostrar contenido real
+   =============================== */
+
+.real-content {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* === FAILSAFE: nunca bloquear la web === */
+#loader {
+  animation: killLoader 0.1s ease forwards;
+  animation-delay: 3s; /* máximo 3 segundos */
+}
+
+@keyframes killLoader {
+  to {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
 
 
 
