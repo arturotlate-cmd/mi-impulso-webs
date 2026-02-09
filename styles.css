@@ -1,37 +1,102 @@
-body {
-  font-family: Arial;
-  background:#0a0f2c;
-  color:white;
-  padding:20px;
+:root {
+  --bg-main: #0F172A;
+  --bg-card: #111827;
+  --border-soft: #1F2933;
+
+  --text-main: #E5E7EB;
+  --text-muted: #9CA3AF;
+
+  --accent: #C9A24D;
+  --accent-hover: #B8963E;
 }
 
-header {
-  text-align:center;
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, sans-serif;
+  background: radial-gradient(circle at top, #111827, #020617);
+  color: var(--text-main);
+  padding: 40px 20px;
+}
+
+.container {
+  max-width: 520px;
+  margin: auto;
+  background: var(--bg-card);
+  border-radius: 18px;
+  padding: 28px;
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+}
+
+h1 {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+h2 {
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
 }
 
 button {
-  padding:10px 15px;
-  border:none;
-  border-radius:8px;
-  background:#00b4d8;
-  color:black;
-  font-weight:bold;
-  cursor:pointer;
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+button:hover {
+  background: var(--accent);
+  color: #020617;
 }
 
 input {
-  padding:10px;
-  border-radius:6px;
-  border:none;
-  margin:5px;
+  width: 100%;
+  background: #020617;
+  border: 1px solid var(--border-soft);
+  padding: 12px;
+  border-radius: 10px;
+  color: var(--text-main);
+  margin-bottom: 10px;
 }
 
-.product {
-  background:#111;
-  padding:10px;
-  margin:10px;
-  border-radius:10px;
+input::placeholder {
+  color: var(--text-muted);
 }
+
+#lista {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+#lista li {
+  padding: 10px 12px;
+  background: #020617;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  border: 1px solid var(--border-soft);
+}
+
+#lista li b {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+
 
 
 
