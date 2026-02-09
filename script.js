@@ -16,22 +16,28 @@ const state = {
 const search = document.getElementById("search");
 const category = document.getElementById("category");
 const productsContainer = document.getElementById("products");
-const sellForm = document.querySelector("#sell form");
+
+const sellForm = document.getElementById("sellForm");
+const pName = document.getElementById("pName");
+const pDesc = document.getElementById("pDesc");
+const pPrice = document.getElementById("pPrice");
+const pCat = document.getElementById("pCat");
 
 /* ===============================
-   NAVEGACIÓN SECCIONES
+   NAVEGACIÓN DE SECCIONES
    =============================== */
-function showSection(id, btn) {
+window.showSection = function (id, btn) {
   const sections = ["market", "sell", "about"];
-  sections.forEach(s => document.getElementById(s)?.classList.add("hidden"));
+
+  sections.forEach(s => {
+    document.getElementById(s).classList.add("hidden");
+  });
 
   document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
-  btn?.classList.add("active");
+  btn.classList.add("active");
 
-  const target = document.getElementById(id);
-  if (!target) return;
-  target.classList.remove("hidden");
-}
+  document.getElementById(id).classList.remove("hidden");
+};
 
 /* ===============================
    CARGAR PRODUCTOS DESDE FIREBASE
@@ -47,23 +53,21 @@ async function loadProducts() {
 
     renderProducts();
   } catch (err) {
-    console.error("Error cargando productos:", err);
+    console.error("❌ Error cargando productos:", err);
   }
 }
 
 /* ===============================
    PUBLICAR PRODUCTO ONLINE
    =============================== */
-sellForm?.addEventListener("submit", async e => {
+sellForm.addEventListener("submit", async e => {
   e.preventDefault();
 
-  const inputs = sellForm.querySelectorAll("input, textarea, select");
-
   const newProduct = {
-    name: inputs[2].value,
-    price: Number(inputs[3].value),
-    desc: inputs[4].value,
-    cat: "producto",
+    name: pName.value,
+    desc: pDesc.value,
+    price: Number(pPrice.value),
+    cat: pCat.value,
     date: Date.now()
   };
 
@@ -74,7 +78,7 @@ sellForm?.addEventListener("submit", async e => {
     sellForm.reset();
     loadProducts();
   } catch (err) {
-    alert("Error al publicar 😢");
+    alert("❌ Error al publicar");
     console.error(err);
   }
 });
@@ -83,10 +87,8 @@ sellForm?.addEventListener("submit", async e => {
    RENDER PRODUCTOS
    =============================== */
 function renderProducts() {
-  if (!productsContainer) return;
-
-  const q = search?.value.toLowerCase() || "";
-  const c = category?.value || "";
+  const q = search.value.toLowerCase();
+  const c = category.value;
 
   productsContainer.innerHTML = "";
 
@@ -96,63 +98,45 @@ function renderProducts() {
   );
 
   if (filtered.length === 0) {
-    productsContainer.innerHTML = "<p>No hay productos aún</p>";
+    productsContainer.innerHTML = "<p>No hay productos todavía 😢</p>";
     return;
   }
 
   filtered.forEach(p => {
     const card = document.createElement("div");
-    card.className = "product reveal";
+    card.className = "product";
 
     card.innerHTML = `
-      <h4>${p.name}</h4>
+      <h3>${p.name}</h3>
       <p>${p.desc}</p>
-      <p class="price">$${p.price}</p>
+      <b>$${p.price}</b>
+      <small>(${p.cat})</small>
     `;
 
     productsContainer.appendChild(card);
-    observer.observe(card);
   });
 }
 
 /* ===============================
    FILTROS
    =============================== */
-search?.addEventListener("input", renderProducts);
-category?.addEventListener("change", renderProducts);
-
-/* ===============================
-   ANIMACIÓN SCROLL REVEAL
-   =============================== */
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add("visible");
-      observer.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.15 });
-
-document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+search.addEventListener("input", renderProducts);
+category.addEventListener("change", renderProducts);
 
 /* ===============================
    LOADER
    =============================== */
-(function () {
+window.addEventListener("load", () => {
   const loader = document.getElementById("loader");
-  if (!loader) return;
-
-  setTimeout(() => {
-    loader.style.opacity = "0";
-    loader.style.pointerEvents = "none";
-    setTimeout(() => loader.remove(), 300);
-  }, 1200);
-})();
+  if (loader) loader.style.display = "none";
+});
 
 /* ===============================
    INIT
    =============================== */
 loadProducts();
+
+
 
 
 
