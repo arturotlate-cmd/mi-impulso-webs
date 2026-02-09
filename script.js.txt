@@ -5,18 +5,26 @@ const state = {
   ]
 };
 
-function showSection(id) {
+/* CAMBIO DE SECCIONES */
+function showSection(id, btn) {
   ['market', 'sell', 'about'].forEach(s => {
     document.getElementById(s).classList.add('hidden');
   });
 
+  document.querySelectorAll('nav button')
+    .forEach(b => b.classList.remove('active'));
+
+  if (btn) btn.classList.add('active');
+
   const section = document.getElementById(id);
   section.classList.remove('hidden');
-  section.classList.remove('fade-in');
-  void section.offsetWidth; // reinicia animación
-  section.classList.add('fade-in');
+
+  section.classList.remove('visible');
+  void section.offsetWidth;
+  section.classList.add('visible');
 }
 
+/* RENDER PRODUCTOS */
 function renderProducts() {
   const q = document.getElementById('search').value.toLowerCase();
   const c = document.getElementById('category').value;
@@ -31,7 +39,7 @@ function renderProducts() {
 
   list.forEach(p => {
     const d = document.createElement('div');
-    d.className = 'product fade-in';
+    d.className = 'product reveal visible';
     d.innerHTML = `
       <h4>${p.name}</h4>
       <p>${p.desc}</p>
@@ -41,4 +49,18 @@ function renderProducts() {
   });
 }
 
+/* ANIMACIONES AL SCROLL */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.reveal')
+  .forEach(el => observer.observe(el));
+
 renderProducts();
+
+
