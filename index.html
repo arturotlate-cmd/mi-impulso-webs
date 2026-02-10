@@ -9,54 +9,61 @@
 <body>
   <div class="container">
     <header class="brand">
-      <img src="logo-impulso.png" alt="IMPULSO">
+      <h1>IMPULSO</h1>
       <h2>Compra y vende en tiempo real</h2>
     </header>
 
+    <!-- AUTH -->
     <section>
       <button id="btnLogin">Iniciar sesión</button>
       <button id="btnLogout" style="display:none;">Cerrar sesión</button>
       <a href="perfil.html">Mi perfil</a>
-      
     </section>
-    <button id="btnPublicarProducto">Publicar producto</button>
-    <button id="btnPublicarServicio">Publicar servicio</button>
-
-    <ul id="productos"></ul>
-    <ul id="servicios"></ul>
 
     <hr>
 
-    <h3>Publicar producto</h3>
-
-    <input id="titulo" placeholder="Título del producto">
-    <input id="precio" type="number" placeholder="Precio">
-    <textarea id="descripcion" placeholder="Descripción"></textarea>
-    <button id="btnPublicar">Publicar servicio</button>
-
-        <h3>Publicar servicio</h3>
-
-    <input id="titulo" placeholder="Título del producto">
-    <input id="precio" type="number" placeholder="Precio">
-    <textarea id="descripcion" placeholder="Descripción"></textarea>
-    <button id="btnPublicar">Publicar servicio</button>
+    <!-- PUBLICAR PRODUCTO -->
+    <section>
+      <h3>Publicar producto</h3>
+      <input id="prodTitulo" placeholder="Título del producto">
+      <input id="prodPrecio" type="number" placeholder="Precio">
+      <textarea id="prodDescripcion" placeholder="Descripción"></textarea>
+      <button id="btnPublicarProducto">Publicar producto</button>
+    </section>
 
     <hr>
 
-    <h3>Productos</h3>
-    <ul id="productos"></ul>
+    <!-- PUBLICAR SERVICIO -->
+    <section>
+      <h3>Publicar servicio</h3>
+      <input id="servTitulo" placeholder="Título del servicio">
+      <input id="servPrecio" type="number" placeholder="Precio">
+      <textarea id="servDescripcion" placeholder="Descripción"></textarea>
+      <button id="btnPublicarServicio">Publicar servicio</button>
+    </section>
+
+    <hr>
+
+    <!-- LISTADOS -->
+    <section>
+      <h3>Productos</h3>
+      <ul id="productos"></ul>
+    </section>
+
+    <section>
+      <h3>Servicios</h3>
+      <ul id="servicios"></ul>
+    </section>
   </div>
-  <hr>
 
-<h3>Servicios</h3>
-<ul id="servicios"></ul>  
+  <!-- SCRIPTS -->
   <script type="module" src="./auth.js"></script>
   <script type="module" src="./products.js"></script>
   <script type="module" src="./services.js"></script>
-
-
 </body>
+
 </html>
+
 
 
 
