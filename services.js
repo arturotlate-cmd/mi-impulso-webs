@@ -35,7 +35,7 @@ if (btn && lista) {
     });
   };
 
-  onSnapshot(collection(db, "services"), (snap) => {
+  const productosRef = collection(db, "productos");
     lista.innerHTML = "";
     snap.forEach(doc => {
       const d = doc.data();
@@ -47,6 +47,7 @@ if (btn && lista) {
 } else {
   console.warn("Servicios: elementos HTML no encontrados");
 }
+
 
 
 
