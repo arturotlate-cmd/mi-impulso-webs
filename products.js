@@ -12,31 +12,49 @@ const db = getFirestore(getApp());
 const btn = document.getElementById("btnPublicarProducto");
 const lista = document.getElementById("productos");
 
-if (btn && lista) {
+if (!btn || !lista) {
+  console.warn("Productos: elementos HTML no encontrados");
+} else {
+
+  // PUBLICAR PRODUCTO
   btn.onclick = async () => {
     if (!window.usuario) {
       alert("Inicia sesión");
       return;
     }
 
-    const titulo = document.getElementById("prodTitulo").value;
-    const precio = document.getElementById("prodPrecio").value;
-    const descripcion = document.getElementById("prodDescripcion").value;
+    const titulo = document.getElementById("prodTitulo")?.value;
+    const precio = document.getElementById("prodPrecio")?.value;
+    const descripcion = document.getElementById("prodDescripcion")?.value || "";
 
-    if (!titulo || !precio) return;
+    if (!titulo || !precio) {
+      alert("Faltan datos");
+      return;
+    }
 
-    await addDoc(collection(db, "products"), {
-      titulo,
-      precio,
-      descripcion,
-      uid: window.usuario.uid,
-      user: window.usuario.displayName,
-      fecha: new Date()
-    });
+    try {
+      await addDoc(collection(db, "productos"), {
+        titulo,
+        precio,
+        descripcion,
+        uid: window.usuario.uid,
+        user: window.usuario.displayName,
+        fecha: new Date()
+      });
+
+      alert("Producto publicado ✅");
+    } catch (e) {
+      console.error("Error al publicar:", e);
+      alert("No se pudo publicar ❌");
+    }
   };
 
+  // LISTAR PRODUCTOS
   const productosRef = collection(db, "productos");
+
+  onSnapshot(productosRef, (snap) => {
     lista.innerHTML = "";
+
     snap.forEach(doc => {
       const d = doc.data();
       const li = document.createElement("li");
@@ -44,9 +62,9 @@ if (btn && lista) {
       lista.appendChild(li);
     });
   });
-} else {
-  console.warn("Productos: elementos HTML no encontrados");
 }
+
+
 
 
 
