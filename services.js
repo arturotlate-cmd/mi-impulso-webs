@@ -12,31 +12,49 @@ const db = getFirestore(getApp());
 const btn = document.getElementById("btnPublicarServicio");
 const lista = document.getElementById("servicios");
 
-if (btn && lista) {
+if (!btn || !lista) {
+  console.warn("Servicios: elementos HTML no encontrados");
+} else {
+
+  // PUBLICAR SERVICIO
   btn.onclick = async () => {
     if (!window.usuario) {
       alert("Inicia sesión");
       return;
     }
 
-    const titulo = document.getElementById("servTitulo").value;
-    const precio = document.getElementById("servPrecio").value;
-    const descripcion = document.getElementById("servDescripcion").value;
+    const titulo = document.getElementById("servTitulo")?.value;
+    const precio = document.getElementById("servPrecio")?.value;
+    const descripcion = document.getElementById("servDescripcion")?.value || "";
 
-    if (!titulo || !precio) return;
+    if (!titulo || !precio) {
+      alert("Faltan datos");
+      return;
+    }
 
-    await addDoc(collection(db, "services"), {
-      titulo,
-      precio,
-      descripcion,
-      uid: window.usuario.uid,
-      user: window.usuario.displayName,
-      fecha: new Date()
-    });
+    try {
+      await addDoc(collection(db, "servicios"), {
+        titulo,
+        precio,
+        descripcion,
+        uid: window.usuario.uid,
+        user: window.usuario.displayName,
+        fecha: new Date()
+      });
+
+      alert("Servicio publicado ✅");
+    } catch (e) {
+      console.error("Error al publicar servicio:", e);
+      alert("No se pudo publicar ❌");
+    }
   };
 
-  const productosRef = collection(db, "productos");
+  // LISTAR SERVICIOS
+  const serviciosRef = collection(db, "servicios");
+
+  onSnapshot(serviciosRef, (snap) => {
     lista.innerHTML = "";
+
     snap.forEach(doc => {
       const d = doc.data();
       const li = document.createElement("li");
@@ -44,9 +62,8 @@ if (btn && lista) {
       lista.appendChild(li);
     });
   });
-} else {
-  console.warn("Servicios: elementos HTML no encontrados");
 }
+
 
 
 
