@@ -1,20 +1,36 @@
-import { auth, db, onUserReady } from "./app.js";
-import { collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const lista = document.getElementById("misProductos");
+import { getApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 
-onUserReady((user) => {
-  document.getElementById("nombre").textContent = user.displayName;
-  document.getElementById("email").textContent = user.email;
+const db = getFirestore(getApp());
 
-  const q = query(collection(db, "products"), where("uid", "==", user.uid));
+const params = new URLSearchParams(window.location.search);
+const uid = params.get("uid");
 
-  onSnapshot(q, snap => {
+const nombre = document.getElementById("nombre");
+const lista = document.getElementById("lista");
+
+if (!uid) {
+  nombre.textContent = "Usuario no encontrado";
+} else {
+  const q = query(
+    collection(db, "productos"),
+    where("uid", "==", uid)
+  );
+
+  onSnapshot(q, (snap) => {
     lista.innerHTML = "";
-    snap.forEach(d => {
+    snap.forEach(doc => {
+      const d = doc.data();
+      nombre.textContent = d.user;
       const li = document.createElement("li");
-      li.textContent = d.data().titulo;
+      li.innerHTML = `<b>${d.titulo}</b> — $${d.precio}`;
       lista.appendChild(li);
     });
   });
-});
