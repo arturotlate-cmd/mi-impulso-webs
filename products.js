@@ -1,59 +1,49 @@
-import { auth, db, onUserReady } from "./app.js";
-import {
-  collection,
-  addDoc,
-  onSnapshot,
-  query,
-  orderBy,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 
+const db = getFirestore(getApp());
+
+const btn = document.getElementById("btnPublicarProducto");
 const lista = document.getElementById("productos");
-const btnPublicar = document.getElementById("btnPublicar");
 
-let usuario = null;
+btn.onclick = async () => {
+  if (!window.usuario) {
+    alert("Inicia sesión primero");
+    return;
+  }
 
-onUserReady((user) => {
-  usuario = user;
-});
+  const titulo = document.getElementById("prodTitulo").value.trim();
+  const precio = document.getElementById("prodPrecio").value;
+  const descripcion = document.getElementById("prodDescripcion").value.trim();
 
-// PUBLICAR PRODUCTO
-btnPublicar?.addEventListener("click", async () => {
-  if (!usuario) return alert("Inicia sesión");
-
-  const titulo = document.getElementById("titulo").value;
-  const precio = document.getElementById("precio").value;
-  const descripcion = document.getElementById("descripcion").value;
+  if (!titulo || !precio) return;
 
   await addDoc(collection(db, "products"), {
     titulo,
     precio,
     descripcion,
-    uid: usuario.uid,
-    vendedor: usuario.displayName,
-    fecha: serverTimestamp()
+    uid: window.usuario.uid,
+    autor: window.usuario.displayName,
+    fecha: new Date()
   });
 
-  alert("Producto publicado");
-});
+  document.getElementById("prodTitulo").value = "";
+  document.getElementById("prodPrecio").value = "";
+  document.getElementById("prodDescripcion").value = "";
+};
 
-// LISTAR PRODUCTOS
-const q = query(collection(db, "products"), orderBy("fecha", "desc"));
-
-onSnapshot(q, (snap) => {
+/* LISTAR PRODUCTOS */
+onSnapshot(collection(db, "products"), (snap) => {
   lista.innerHTML = "";
-
   snap.forEach(doc => {
     const p = doc.data();
     const li = document.createElement("li");
-
     li.innerHTML = `
-      <b>${p.titulo}</b><br>
+      <strong>${p.titulo}</strong><br>
       $${p.precio}<br>
-      <small>${p.vendedor}</small><br>
-      <a href="producto.html?id=${doc.id}">Ver producto</a>
+      <small>${p.autor}</small>
     `;
-
     lista.appendChild(li);
   });
 });
