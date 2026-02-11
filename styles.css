@@ -222,6 +222,88 @@ body.landing {
   gap: 2rem;
   padding: 2rem;
 }
+/* TIPOGRAFÍA */
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* HERO */
+.tagline {
+  font-size: 1rem;
+  color: #9ca3af;
+  margin-bottom: 1.5rem;
+}
+
+/* LOGO ANIMACIÓN */
+.logo-animate {
+  animation: logoFade 1.2s ease-out forwards;
+}
+
+@keyframes logoFade {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* SECCIONES */
+.section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.section.dark {
+  background: #111827;
+}
+
+/* STEPS */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.step {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+/* TRUST */
+.trust {
+  list-style: none;
+  padding: 0;
+  margin-top: 32px;
+}
+
+.trust li {
+  margin: 12px 0;
+  color: #e5e7eb;
+}
+
+/* CTA */
+.cta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* FOOTER */
+.footer {
+  padding: 40px 20px;
+  text-align: center;
+  color: #9ca3af;
+}
+
 
 
 
