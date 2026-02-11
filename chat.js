@@ -12,8 +12,8 @@ const params = new URLSearchParams(window.location.search);
 const productId = params.get("product");
 
 if (!productId) {
-  alert("Chat inválido");
-  throw new Error("Falta productId");
+  console.warn("Chat desactivado: sin productId");
+  return;
 }
 
 const lista = document.getElementById("mensajes");
@@ -50,4 +50,5 @@ btn.addEventListener("click", async () => {
 
   input.value = "";
 });
+
 
