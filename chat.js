@@ -1,5 +1,4 @@
 import {
-  getFirestore,
   collection,
   addDoc,
   onSnapshot,
@@ -7,12 +6,15 @@ import {
   orderBy
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-import { getApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-
-const db = getFirestore(getApp());
+import { db } from "./firebase.js";
 
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("product");
+
+if (!productId) {
+  alert("Chat inválido");
+  throw new Error("Falta productId");
+}
 
 const lista = document.getElementById("mensajes");
 const input = document.getElementById("msg");
@@ -31,8 +33,13 @@ onSnapshot(q, snap => {
   });
 });
 
-btn.onclick = async () => {
-  if (!window.usuario) return alert("Inicia sesión");
+btn.addEventListener("click", async () => {
+  if (!window.usuario) {
+    alert("Inicia sesión");
+    return;
+  }
+
+  if (!input.value.trim()) return;
 
   await addDoc(ref, {
     texto: input.value,
@@ -42,4 +49,5 @@ btn.onclick = async () => {
   });
 
   input.value = "";
-};
+});
+
