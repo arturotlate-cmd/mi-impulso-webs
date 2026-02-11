@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Producto | IMPULSO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <a href="products.html">← Volver</a>
+</header>
+
+<div class="container">
+  <h1 id="titulo"></h1>
+  <p id="descripcion"></p>
+  <p id="precio"></p>
+
+  <div id="chatContainer" style="display:none; margin-top:30px;">
+    <h2>Chat del producto</h2>
+    <ul id="mensajes"></ul>
+    <input id="msg" placeholder="Escribe tu mensaje">
+    <button id="enviar">Enviar</button>
+  </div>
+</div>
+
+<script type="module" src="firebase.js"></script>
+<script type="module">
+
+import { db } from "./firebase.js";
+import { doc, getDoc, collection, query, onSnapshot, orderBy, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const params = new URLSearchParams(location.search);
+const id = params.get("id");
+
+if (!id) {
+  document.body.innerHTML = "<p>Producto inválido</p>";
+} else {
+
+  const ref = doc(db, "productos", id);
+  getDoc(ref).then(res => {
+    if (!res.exists()) {
+      document.body.innerHTML = "<p>Producto no encontrado</p>";
+      return;
+    }
+    const d = res.data();
+    document.getElementById("titulo").textContent = d.titulo;
+    document.getElementById("descripcion").textContent = d.descripcion;
+    document.getElementById("precio").textContent = "$" + d.precio;
+
+    document.getElementById("chatContainer").style.display = "block";
+
+    const refChat = collection(db, "chats", id, "messages");
+    const q = query(refChat, orderBy("fecha"));
+
+    onSnapshot(q, snap => {
+      const lista = document.getElementById("mensajes");
+      lista.innerHTML = "";
+      snap.forEach(doc => {
+        const d = doc.data();
+        lista.innerHTML += `<li><b>${d.user}:</b> ${d.texto}</li>`;
+      });
+    });
+
+    document.getElementById("enviar").addEventListener("click", async () => {
+      if (!window.usuario) {
+        alert("Inicia sesión para enviar mensajes");
+        return;
+      }
+      const texto = document.getElementById("msg").value.trim();
+      if (!texto) return;
+      await addDoc(refChat, {
+        texto,
+        user: window.usuario.displayName,
+        uid: window.usuario.uid,
+        fecha: new Date()
+      });
+      document.getElementById("msg").value = "";
+    });
+
+  });
+
+}
+
+</script>
+
+</body>
+</html>
