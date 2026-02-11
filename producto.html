@@ -2,30 +2,38 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Producto | IMPULSO</title>
-  <p class="notice">
-  IMPULSO facilita el contacto. Los acuerdos y pagos se realizan directamente entre las partes.
-</p>
-
+  <title>Publicar | IMPULSO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <div class="container">
-    <h2 id="tituloProducto"></h2>
-    <p id="descripcionProducto"></p>
 
-    <hr>
+  <header class="simple-header">
+    <h1>Publicar Producto</h1>
+    <a href="index.html">← Volver</a>
+  </header>
 
-    <input id="mensaje" placeholder="Escribe..." disabled>
-    <button id="btnEnviar">Enviar</button>
+  <section class="form-section">
 
-    <ul id="lista"></ul>
-  </div>
+    <input id="prodTitulo" type="text" placeholder="Título del producto">
+    <input id="prodPrecio" type="number" placeholder="Precio">
+    <textarea id="prodDescripcion" placeholder="Descripción"></textarea>
 
+    <button id="btnPublicarProducto">Publicar</button>
+
+  </section>
+
+  <section class="list-section">
+    <h2>Productos publicados</h2>
+    <ul id="productos"></ul>
+  </section>
+
+  <script type="module" src="firebase.js"></script>
   <script type="module" src="products.js"></script>
-  <script type="module" src="chat.js"></script>
-</body>
 
+</body>
 </html>
+
+
 
