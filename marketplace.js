@@ -1,76 +1,5 @@
 // marketplace.js
-import {
-  collection,
-  addDoc,
-  onSnapshot
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-import { db } from "./firebase.js";
-
-/**
- * Inicializa un módulo de marketplace
- * @param {Object} config
- */
 export function initMarketplace(config) {
-
-  const btn = document.getElementById(config.btnId);
-  const list = document.getElementById(config.listId);
-
-  if (!btn || !list) {
-    console.warn("Marketplace (productos): elementos no encontrados");
-    return;
-  }
-  
-  /* PUBLICAR */
-  btn.addEventListener("click", async () => {
-if (!window.usuario || !window.usuario.uid) {
-  alert("Debes iniciar sesión con Google para publicar");
-  return;
-}
-    
-    const data = {};
-
-    for (const field of fields) {
-      const input = document.getElementById(field.id);
-      if (!input || !input.value.trim()) {
-        alert(`Falta el campo: ${field.label}`);
-        return;
-      }
-      data[field.name] = input.value.trim();
-    }
-
-    try {
-      await addDoc(collection(db, collectionName), {
-        ...data,
-        uid: window.usuario.uid,
-        user: window.usuario.displayName,
-        fecha: new Date()
-      });
-
-      alert("Publicado correctamente ✅");
-      fields.forEach(f => {
-        const el = document.getElementById(f.id);
-        if (el) el.value = "";
-      });
-
-    } catch (e) {
-      console.error(`Error en ${collectionName}:`, e);
-      alert("No se pudo publicar ❌");
-    }
-  });
-
-  /* LISTAR */
-  onSnapshot(collection(db, collectionName), (snap) => {
-    lista.innerHTML = "";
-    snap.forEach(doc => {
-      const d = doc.data();
-      const li = document.createElement("li");
-      li.innerHTML = `<b>${d.titulo}</b> — $${d.precio}`;
-      lista.appendChild(li);
-    });
-  });
-}
-
   const btn = document.getElementById(config.btnId);
   const list = document.getElementById(config.listId);
 
@@ -83,29 +12,29 @@ if (!window.usuario || !window.usuario.uid) {
     }
 
     const data = {};
+
     for (const f of config.fields) {
       const el = document.getElementById(f.id);
-      if (!el.value.trim()) {
-        alert(`Falta ${f.label}`);
+      if (!el || !el.value.trim()) {
+        alert(`Por favor completa: ${f.label}`);
         return;
       }
       data[f.key] = el.value.trim();
     }
 
-    data.uid = window.usuario.uid;
-    data.user = window.usuario.displayName;
-    data.fecha = new Date();
-
     try {
       await config.addDocFn(data);
       alert("Publicado con éxito!");
-    } catch {
-      alert("Error al publicar");
+    } catch (e) {
+      console.error("Error al publicar:", e);
+      alert("No se pudo publicar ❌");
     }
   });
 
   config.onSnapshotFn(list);
 }
+
+
 
 
 
