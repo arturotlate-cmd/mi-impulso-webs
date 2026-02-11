@@ -1,15 +1,21 @@
 import { initMarketplace } from "./marketplace.js";
 
-initMarketplace({
-  collectionName: "productos",
-  btnId: "btnPublicarProducto",
-  listId: "productos",
-  fields: [
-    { id: "prodTitulo", name: "titulo", label: "Título" },
-    { id: "prodPrecio", name: "precio", label: "Precio" },
-    { id: "prodDescripcion", name: "descripcion", label: "Descripción" }
-  ]
+document.addEventListener("DOMContentLoaded", () => {
+
+  initMarketplace({
+    collectionName: "productos",
+    btnId: "btnPublicarProducto",
+    listId: "productos",
+    fields: [
+      { id: "prodTitulo", key: "titulo" },
+      { id: "prodPrecio", key: "precio" },
+      { id: "prodDescripcion", key: "descripcion" }
+    ]
+  });
+
 });
+
+
 
 
 
