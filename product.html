@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Producto | IMPULSO</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
 <header>
-  <a href="products.html">← Volver</a>
+  <a href="productos.html">← Volver</a>
 </header>
 
 <div class="container">
@@ -20,16 +21,24 @@
   <div id="chatContainer" style="display:none; margin-top:30px;">
     <h2>Chat del producto</h2>
     <ul id="mensajes"></ul>
-    <input id="msg" placeholder="Escribe tu mensaje">
+
+    <input id="msg" placeholder="Escribe tu mensaje" />
     <button id="enviar">Enviar</button>
   </div>
 </div>
 
 <script type="module" src="firebase.js"></script>
 <script type="module">
-
 import { db } from "./firebase.js";
-import { doc, getDoc, collection, query, onSnapshot, orderBy, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import {
+  doc,
+  getDoc,
+  collection,
+  query,
+  onSnapshot,
+  orderBy,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const params = new URLSearchParams(location.search);
 const id = params.get("id");
@@ -37,9 +46,8 @@ const id = params.get("id");
 if (!id) {
   document.body.innerHTML = "<p>Producto inválido</p>";
 } else {
-
-  const ref = doc(db, "productos", id);
-  getDoc(ref).then(res => {
+  const docRef = doc(db, "productos", id);
+  getDoc(docRef).then(res => {
     if (!res.exists()) {
       document.body.innerHTML = "<p>Producto no encontrado</p>";
       return;
@@ -55,11 +63,11 @@ if (!id) {
     const q = query(refChat, orderBy("fecha"));
 
     onSnapshot(q, snap => {
-      const lista = document.getElementById("mensajes");
-      lista.innerHTML = "";
+      const mensajesEl = document.getElementById("mensajes");
+      mensajesEl.innerHTML = "";
       snap.forEach(doc => {
-        const d = doc.data();
-        lista.innerHTML += `<li><b>${d.user}:</b> ${d.texto}</li>`;
+        const m = doc.data();
+        mensajesEl.innerHTML += `<li><b>${m.user}:</b> ${m.texto}</li>`;
       });
     });
 
@@ -78,12 +86,15 @@ if (!id) {
       });
       document.getElementById("msg").value = "";
     });
-
   });
-
 }
+</script>
+
+</body>
+</html>
 
 </script>
 
 </body>
 </html>
+
