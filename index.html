@@ -76,8 +76,15 @@
     <small>© IMPULSO 2026 · Plataforma de conexión comercial</small>
   </footer>
 
+  <script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./sw.js");
+  }
+</script>
+
 </body>
 </html>
+
 
 
 
