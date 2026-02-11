@@ -12,21 +12,15 @@ import { db } from "./firebase.js";
  * @param {Object} config
  */
 export function initMarketplace(config) {
-  const {
-    collectionName,
-    btnId,
-    listId,
-    fields
-  } = config;
 
-  const btn = document.getElementById(btnId);
-  const lista = document.getElementById(listId);
+  const btn = document.getElementById(config.btnId);
+  const list = document.getElementById(config.listId);
 
-  if (!btn || !lista) {
-    console.warn(`Marketplace (${collectionName}): elementos no encontrados`);
+  if (!btn || !list) {
+    console.warn("Marketplace (productos): elementos no encontrados");
     return;
   }
-
+  
   /* PUBLICAR */
   btn.addEventListener("click", async () => {
 if (!window.usuario || !window.usuario.uid) {
@@ -76,4 +70,5 @@ if (!window.usuario || !window.usuario.uid) {
     });
   });
 }
+
 
