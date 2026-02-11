@@ -2,38 +2,57 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Publicar | IMPULSO</title>
+  <title>Producto | IMPULSO</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <header class="simple-header">
-    <h1>Publicar Producto</h1>
-    <a href="index.html">← Volver</a>
-  </header>
+<header>
+  <a href="products.html">← Volver</a>
+</header>
 
-  <section class="form-section">
+<div class="container">
+  <h1 id="titulo"></h1>
+  <p id="descripcion"></p>
+  <p id="precio"></p>
 
-    <input id="prodTitulo" type="text" placeholder="Título del producto">
-    <input id="prodPrecio" type="number" placeholder="Precio">
-    <textarea id="prodDescripcion" placeholder="Descripción"></textarea>
+  <hr>
 
-    <button id="btnPublicarProducto">Publicar</button>
+  <div id="chatSection" style="display:none;">
+    <a id="btnChat" class="btn btn-primary">Abrir Chat</a>
+  </div>
+</div>
 
-  </section>
+<script type="module" src="firebase.js"></script>
+<script type="module">
+import { db } from "./firebase.js";
+import { getDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  <section class="list-section">
-    <h2>Productos publicados</h2>
-    <ul id="productos"></ul>
-  </section>
+const params = new URLSearchParams(location.search);
+const id = params.get("id");
 
-  <script type="module" src="firebase.js"></script>
-  <script type="module" src="products.js"></script>
+if (!id) {
+  alert("Producto inválido");
+} else {
+  const ref = doc(db, "productos", id);
+  getDoc(ref).then(res => {
+    const d = res.data();
+    document.getElementById("titulo").textContent = d.titulo;
+    document.getElementById("descripcion").textContent = d.descripcion;
+    document.getElementById("precio").textContent = "$" + d.precio;
+
+    document.getElementById("chatSection").style.display = "block";
+    document.getElementById("btnChat").href = `chat.html?product=${id}`;
+  });
+}
+</script>
 
 </body>
 </html>
+
+
 
 
 
