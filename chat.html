@@ -3,13 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <title>Chat | IMPULSO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <ul id="mensajes"></ul>
-  <input id="msg">
-  <button id="enviar">Enviar</button>
 
+  <header class="simple-header">
+    <h1>Chat</h1>
+    <a href="index.html">← Volver</a>
+  </header>
+
+  <section class="chat-container">
+    <ul id="mensajes"></ul>
+
+    <div class="chat-input">
+      <input id="msg" type="text" placeholder="Escribe un mensaje">
+      <button id="enviar">Enviar</button>
+    </div>
+  </section>
+
+  <script type="module" src="firebase.js"></script>
   <script type="module" src="chat.js"></script>
+
 </body>
 </html>
+
