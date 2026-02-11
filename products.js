@@ -1,19 +1,39 @@
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  query,
+  orderBy
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { db } from "./firebase.js";
 import { initMarketplace } from "./marketplace.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-
-  initMarketplace({
-    collectionName: "productos",
-    btnId: "btnPublicarProducto",
-    listId: "productos",
-    fields: [
-      { id: "prodTitulo", key: "titulo" },
-      { id: "prodPrecio", key: "precio" },
-      { id: "prodDescripcion", key: "descripcion" }
-    ]
-  });
-
+initMarketplace({
+  btnId: "btnPublicar",
+  listId: "productos",
+  fields: [
+    { id: "prodTitulo", key: "titulo", label: "Título" },
+    { id: "prodPrecio", key: "precio", label: "Precio" },
+    { id: "prodDescripcion", key: "descripcion", label: "Descripción" }
+  ],
+  addDocFn: (data) => addDoc(collection(db, "productos"), data),
+  onSnapshotFn: (list) => {
+    const q = query(collection(db, "productos"), orderBy("fecha", "desc"));
+    onSnapshot(q, (snap) => {
+      list.innerHTML = "";
+      snap.forEach(doc => {
+        const d = doc.data();
+        list.innerHTML += `
+          <li class="product-item">
+            <a class="product-link" href="product.html?id=${doc.id}">
+              ${d.titulo} — $${d.precio}
+            </a>
+          </li>`;
+      });
+    });
+  }
 });
+
 
 
 
