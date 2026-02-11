@@ -71,7 +71,6 @@ if (!window.usuario || !window.usuario.uid) {
   });
 }
 
-export function initMarketplace(config) {
   const btn = document.getElementById(config.btnId);
   const list = document.getElementById(config.listId);
 
@@ -107,6 +106,7 @@ export function initMarketplace(config) {
 
   config.onSnapshotFn(list);
 }
+
 
 
 
