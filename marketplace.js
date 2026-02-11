@@ -29,11 +29,11 @@ export function initMarketplace(config) {
 
   /* PUBLICAR */
   btn.addEventListener("click", async () => {
-    if (!window.usuario) {
-      alert("Inicia sesión para publicar");
-      return;
-    }
-
+if (!window.usuario || !window.usuario.uid) {
+  alert("Debes iniciar sesión con Google para publicar");
+  return;
+}
+    
     const data = {};
 
     for (const field of fields) {
@@ -76,3 +76,4 @@ export function initMarketplace(config) {
     });
   });
 }
+
