@@ -71,4 +71,43 @@ if (!window.usuario || !window.usuario.uid) {
   });
 }
 
+export function initMarketplace(config) {
+  const btn = document.getElementById(config.btnId);
+  const list = document.getElementById(config.listId);
+
+  if (!btn || !list) return;
+
+  btn.addEventListener("click", async () => {
+    if (!window.usuario) {
+      alert("Debes iniciar sesión para publicar");
+      return;
+    }
+
+    const data = {};
+    for (const f of config.fields) {
+      const el = document.getElementById(f.id);
+      if (!el.value.trim()) {
+        alert(`Falta ${f.label}`);
+        return;
+      }
+      data[f.key] = el.value.trim();
+    }
+
+    data.uid = window.usuario.uid;
+    data.user = window.usuario.displayName;
+    data.fecha = new Date();
+
+    try {
+      await config.addDocFn(data);
+      alert("Publicado con éxito!");
+    } catch {
+      alert("Error al publicar");
+    }
+  });
+
+  config.onSnapshotFn(list);
+}
+
+
+
 
