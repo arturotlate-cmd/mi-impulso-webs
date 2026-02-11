@@ -1,4 +1,5 @@
 import {
+  getFirestore,
   collection,
   addDoc,
   onSnapshot,
@@ -13,43 +14,45 @@ const productId = params.get("product");
 
 if (!productId) {
   console.warn("Chat desactivado: sin productId");
-  return;
+}
+else {
+  const lista = document.getElementById("mensajes");
+  const input = document.getElementById("msg");
+  const btn = document.getElementById("enviar");
+
+  const ref = collection(db, "chats", productId, "messages");
+  const q = query(ref, orderBy("fecha"));
+
+  onSnapshot(q, snap => {
+    lista.innerHTML = "";
+    snap.forEach(doc => {
+      const d = doc.data();
+      const li = document.createElement("li");
+      li.textContent = `${d.user}: ${d.texto}`;
+      lista.appendChild(li);
+    });
+  });
+
+  btn.addEventListener("click", async () => {
+    if (!window.usuario) {
+      alert("Inicia sesión");
+      return;
+    }
+
+    if (!input.value.trim()) return;
+
+    await addDoc(ref, {
+      texto: input.value,
+      user: window.usuario.displayName,
+      uid: window.usuario.uid,
+      fecha: new Date()
+    });
+
+    input.value = "";
+  });
 }
 
-const lista = document.getElementById("mensajes");
-const input = document.getElementById("msg");
-const btn = document.getElementById("enviar");
 
-const ref = collection(db, "chats", productId, "messages");
-const q = query(ref, orderBy("fecha"));
-
-onSnapshot(q, snap => {
-  lista.innerHTML = "";
-  snap.forEach(doc => {
-    const d = doc.data();
-    const li = document.createElement("li");
-    li.textContent = `${d.user}: ${d.texto}`;
-    lista.appendChild(li);
-  });
-});
-
-btn.addEventListener("click", async () => {
-  if (!window.usuario) {
-    alert("Inicia sesión");
-    return;
-  }
-
-  if (!input.value.trim()) return;
-
-  await addDoc(ref, {
-    texto: input.value,
-    user: window.usuario.displayName,
-    uid: window.usuario.uid,
-    fecha: new Date()
-  });
-
-  input.value = "";
-});
 
 
 
